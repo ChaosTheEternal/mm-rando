@@ -70,6 +70,7 @@ namespace MMR.Randomizer.Utils
                 DungeonEntrances = dungeonEntrances,
                 ItemList = itemList.ToList(),
                 Logic = randomized.Logic,
+                WebService = outputSettings.WebServiceURL ?? "",
                 GossipHints = randomized.GossipQuotes?.ToDictionary(me => (GossipQuote) me.Id, (me) =>
                 {
                     var message = me.Message.Substring(1);

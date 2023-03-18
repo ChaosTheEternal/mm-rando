@@ -26,34 +26,71 @@ namespace MMR.Randomizer.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<style>\r\n    body.dark-mode {\r\n      background-" +
-                    "color: #111;\r\n      color: #ccc;\r\n    }\r\n    body.dark-mode a {\r\n      color: #1" +
-                    "11;\r\n    }\r\n    body.dark-mode button {\r\n      background-color: #ddd;\r\n      co" +
-                    "lor: #111;\r\n    }\r\n\r\n    body.light-mode {\r\n      background-color: #eee;\r\n     " +
-                    " color: #111;\r\n    }\r\n    body.light-mode a {\r\n      color: #111;\r\n    }\r\n    bo" +
-                    "dy.light-mode button {\r\n      background-color: #111;\r\n      color: #ccc;\r\n    }" +
-                    "\r\n\r\n    th{ text-align:left }\r\n    .region { text-align: center; font-weight: bo" +
-                    "ld; }\r\n    [data-content]:before { content: attr(data-content); }\r\n\r\n    .dark-m" +
-                    "ode .spoiler{ background-color:#ccc }\r\n    .dark-mode .spoiler:active { backgrou" +
-                    "nd-color: #111;  }\r\n    .dark-mode .show-highlight .unavailable .newlocation { b" +
-                    "ackground-color: #500705; }\r\n    .dark-mode .show-highlight .acquired .newlocati" +
-                    "on { background-color: #69591f; }\r\n    .dark-mode .show-highlight .available .ne" +
-                    "wlocation { background-color: #313776; }\r\n\r\n    .light-mode .spoiler{ background" +
-                    "-color:#111 }\r\n    .light-mode .spoiler:active { background-color: #ccc;  }\r\n   " +
-                    " .light-mode .show-highlight .unavailable .newlocation { background-color: #FF99" +
-                    "99; }\r\n    .light-mode .show-highlight .acquired .newlocation { background-color" +
-                    ": #99FF99; }\r\n    .light-mode .show-highlight .available .newlocation { backgrou" +
-                    "nd-color: #9999FF; }\r\n\r\n\r\n    #spoilerLogState { width: 560px; }\r\n</style>\r\n</he" +
-                    "ad>\r\n<body class=\"light-mode\">\r\n<label><b>Version: </b></label><span>");
+            this.Write(@"<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body.dark-mode {
+      background-color: #111;
+      color: #ccc;
+    }
+    body.dark-mode a {
+      color: #111;
+    }
+    body.dark-mode button {
+      background-color: #ddd;
+      color: #111;
+    }
+
+    body.light-mode {
+      background-color: #eee;
+      color: #111;
+    }
+    body.light-mode a {
+      color: #111;
+    }
+    body.light-mode button {
+      background-color: #111;
+      color: #ccc;
+    }
+
+    th{ text-align:left }
+    .region { text-align: center; font-weight: bold; }
+    [data-content]:before { content: attr(data-content); }
+
+    .dark-mode .spoiler{ background-color:#ccc }
+    .dark-mode .spoiler:active { background-color: #111;  }
+    .dark-mode .unavailable .newlocation { background-color: #500705; }
+    .dark-mode .acquired .newlocation { background-color: #69591f; }
+    .dark-mode .available .newlocation { background-color: #313776; }
+
+    .light-mode .spoiler{ background-color:#111 }
+    .light-mode .spoiler:active { background-color: #ccc;  }
+    .light-mode .unavailable .newlocation { background-color: #FF9999; }
+    .light-mode .acquired .newlocation { background-color: #99FF99; }
+    .light-mode .available .newlocation { background-color: #9999FF; }
+
+
+    #spoilerLogState { width: 560px; }
+</style>
+</head>
+<body class=""light-mode"">
+<details><summary>Randomizer Information</summary>
+<p><label><b>Version: </b></label><span>");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.Version));
-            this.Write("</span><br/>\r\n<label><b>Settings: </b></label><code style=\"word-break: break-all;" +
-                    "\">");
+            this.Write("</span></p>\r\n<p><label><b>Settings: </b></label><code style=\"word-break: break-al" +
+                    "l;\">");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.SettingsString));
-            this.Write("</code><br/>\r\n<label><b>Seed: </b></label><span>");
+            this.Write("</code></p>\r\n<p><label><b>Seed: </b></label><span>");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.Seed));
-            this.Write("</span><br/>\r\n<br/>\r\n<button type=\"button\" onclick=\"toggleDarkLight()\" title=\"Tog" +
-                    "gle dark/light mode\">Toggle Dark Theme</button>\r\n<br/>\r\n<br/>\r\n<label><b>Spoiler" +
-                    " Log State: </b></label><input id=\"spoilerLogState\" type=\"text\"/><br/>\r\n");
+            this.Write(@"</span></p>
+<p><label for=""spoilerWebService""><b>Spoiler Web Service: </b></label><input id=""spoilerWebService"" type=""text"" readonly /></p>
+<p><label for=""spoilerLogState""><b>Spoiler Log State: </b></label><input id=""spoilerLogState"" type=""text"" /></p>
+</details>
+<br/>
+<button type=""button"" onclick=""toggleDarkLight()"" title=""Toggle dark/light mode"">Toggle Dark Theme</button>
+<br/>
+");
  if (spoiler.DungeonEntrances.Any()) { 
 
             this.Write("<h2>Dungeon Entrance Replacements</h2>\r\n<table border=\"1\" class=\"item-replacement" +
@@ -75,9 +112,8 @@ namespace MMR.Randomizer.Templates
  } 
             this.Write("</table>\r\n");
  } 
-            this.Write("<h2>Item Replacements</h2>\r\n<input type=\"checkbox\" id=\"highlight-checks\"/> Highli" +
-                    "ght available checks\r\n<table border=\"1\" class=\"item-replacements\">\r\n <tr>\r\n     " +
-                    "<th>Location</th>\r\n     <th></th>\r\n     <th></th>\r\n </tr>\r\n");
+            this.Write("<h2>Item Replacements</h2>\r\n<table border=\"1\" class=\"item-replacements\">\r\n <tr>\r\n" +
+                    "     <th>Location</th>\r\n     <th></th>\r\n     <th></th>\r\n </tr>\r\n");
  foreach (var region in spoiler.ItemList.GroupBy(item => item.Region).OrderBy(g => g.Key)) {
 
             this.Write(" <tr class=\"region\"><td colspan=\"3\">");
@@ -159,71 +195,68 @@ namespace MMR.Randomizer.Templates
                     "  }\r\n\r\n    function find(list, predicate) {\r\n        for (var i = 0; i < list.le" +
                     "ngth; i++) {\r\n            if (predicate(list[i])) {\r\n                return list" +
                     "[i];\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n    \r\n    var segme" +
-                    "ntSize = 16;\r\n    function saveItems() {\r\n        var segments = [];\r\n        fo" +
-                    "r (var i = 0; i < logic.length; i++) {\r\n            var segmentIndex = parseInt(" +
-                    "i / segmentSize);\r\n            segments[segmentIndex] = segments[segmentIndex] |" +
-                    "| 0;\r\n            if (logic[i].Checked) {\r\n                segments[parseInt(i /" +
-                    " segmentSize)] += (1 << (i%segmentSize));\r\n            }\r\n        }\r\n        var" +
-                    " saveString = segments.map(function(s) {\r\n            return s.toString(16);\r\n  " +
-                    "      }).join(\"-\");\r\n        var saveInput = document.querySelector(\"#spoilerLog" +
-                    "State\");\r\n        saveInput.value = saveString;\r\n    }\r\n\r\n    function loadItems" +
-                    "() {\r\n        var saveInput = document.querySelector(\"#spoilerLogState\");\r\n     " +
-                    "   var segments = saveInput.value.split(\"-\");\r\n        if (Math.ceil(logic.lengt" +
-                    "h / segmentSize) !== segments.length) {\r\n            alert(\"Invalid Spoiler Log " +
-                    "state\");\r\n            return;\r\n        }\r\n        segments = segments.map(functi" +
-                    "on(segment) {\r\n            return parseInt(segment, 16);\r\n        });\r\n        v" +
-                    "ar locationsToCheck = [];\r\n        for (var i = 0; i < segments.length; i++) {\r\n" +
-                    "            var segment = segments[i];\r\n            for (var j = 0; j < segmentS" +
-                    "ize; j++) {\r\n                var itemIndex = segmentSize * i + j;\r\n             " +
-                    "   if (itemIndex < logic.length) {\r\n                    var mark = ((segment >> " +
-                    "j) % 2 == 1);\r\n                    logic[itemIndex].Checked = mark;\r\n           " +
-                    "         var itemRow = document.querySelector(\"tr[data-newlocationid=\'\" + itemIn" +
-                    "dex + \"\']\");\r\n                    if (itemRow) {\r\n                        logic[" +
-                    "itemRow.dataset.id].Acquired = mark;\r\n                    } else {\r\n            " +
-                    "            logic[itemIndex].Acquired = mark;\r\n                    }\r\n          " +
-                    "          if (!includes(locationsToCheck, itemIndex)) {\r\n                       " +
-                    " locationsToCheck.push(itemIndex);\r\n                    }\r\n                }\r\n  " +
-                    "          }\r\n        }\r\n        checkLocations(locationsToCheck);\r\n    }\r\n\r\n    " +
-                    "document.querySelector(\"#spoilerLogState\").addEventListener(\"keypress\", function" +
-                    "(event) {\r\n        if (event.keyCode === 13) {\r\n            loadItems();\r\n      " +
-                    "  }\r\n    });\r\n\r\n    function checkLocations(locations) {\r\n        var itemsToChe" +
-                    "ck = [];\r\n        for (var i = 0; i < locations.length; i++) {\r\n            var " +
-                    "location = logic[locations[i]];\r\n            location.IsAvailable = \r\n          " +
-                    "      (location.RequiredItemIds === null || location.RequiredItemIds.length === " +
-                    "0 || all(location.RequiredItemIds, function(id) { return logic[id].Acquired || l" +
-                    "ogic[id].IsItemRemoved; }))\r\n                && \r\n                (location.Cond" +
-                    "itionalItemIds === null || location.ConditionalItemIds.length === 0 || any(locat" +
-                    "ion.ConditionalItemIds, function(conditionals) { return all(conditionals, functi" +
-                    "on(id) { return logic[id].Acquired || logic[id].IsItemRemoved; }); }));\r\n       " +
-                    "     \r\n            var newLocation = find(logic, function(io) { return io.NewLoc" +
-                    "ationId === locations[i]; });\r\n            if (!newLocation) {\r\n                " +
-                    "newLocation = location;\r\n            }\r\n            if (!newLocation.Acquired &&" +
-                    " location.IsFakeItem && location.IsAvailable) {\r\n                newLocation.Acq" +
-                    "uired = true;\r\n                itemsToCheck.push(newLocation.ItemId);\r\n         " +
-                    "   }\r\n            if (newLocation.Acquired && location.IsFakeItem && !location.I" +
-                    "sAvailable) {\r\n                newLocation.Acquired = false;\r\n                it" +
-                    "emsToCheck.push(newLocation.ItemId);\r\n            }\r\n        \r\n            var l" +
-                    "ocationRows = document.querySelectorAll(\".item-replacements tr[data-newlocationi" +
-                    "d=\'\" + locations[i] + \"\']\");\r\n            for (const locationRow of locationRows" +
-                    ") {\r\n                locationRow.className = \"\";\r\n                locationRow.cl" +
-                    "assList.add(location.IsAvailable ? \"available\" : \"unavailable\");\r\n              " +
-                    "  var itemName = locationRow.querySelector(\".itemname\");\r\n                var ch" +
-                    "eckbox = locationRow.querySelector(\"input\");\r\n                checkbox.checked =" +
-                    " location.Checked;\r\n                if (location.Checked) {\r\n                   " +
-                    " itemName.classList.remove(\"spoiler\");\r\n                } else {\r\n              " +
-                    "      itemName.classList.add(\"spoiler\");\r\n                }\r\n            }\r\n    " +
-                    "    \r\n            var itemRows = document.querySelectorAll(\"#item-locations tr[d" +
-                    "ata-newlocationid=\'\" + locations[i] + \"\']\");\r\n            for (const itemRow of " +
-                    "itemRows) {\r\n                var itemNames = itemRow.querySelectorAll(\".newlocat" +
-                    "ion\");\r\n                var checkbox = itemRow.querySelector(\"input\");\r\n        " +
-                    "        var item = logic[itemRow.dataset.id];\r\n                checkbox.checked " +
-                    "= item.Acquired;\r\n                for (const itemName of itemNames) {\r\n         " +
-                    "           if (item.Acquired) {\r\n                        itemName.classList.remo" +
-                    "ve(\"spoiler\");\r\n                    } else {\r\n                        itemName.c" +
-                    "lassList.add(\"spoiler\");\r\n                    }\r\n                }\r\n            " +
-                    "}\r\n        }\r\n        if (itemsToCheck.length > 0) {\r\n            checkItems(ite" +
-                    "msToCheck);\r\n        } else {\r\n            saveItems();\r\n        }\r\n    }\r\n\r\n   " +
-                    " var logic = ");
+                    "ntSize = 16;\r\n\tfunction getItemList() {\r\n        var segments = [];\r\n        for" +
+                    " (var i = 0; i < logic.length; i++) {\r\n            var segmentIndex = parseInt(i" +
+                    " / segmentSize);\r\n            segments[segmentIndex] = segments[segmentIndex] ||" +
+                    " 0;\r\n            if (logic[i].Checked) { segments[parseInt(i / segmentSize)] += " +
+                    "(1 << (i%segmentSize)); }\r\n        }\r\n        return segments.map(function(s) { " +
+                    "return s.toString(16); }).join(\"-\");\r\n\t}\r\n    function saveItems() {\r\n        va" +
+                    "r saveInput = document.querySelector(\"#spoilerLogState\");\r\n        var oldValue " +
+                    "= saveInput.value;\r\n\t\tsaveInput.value = getItemList();\r\n\t\treturn ajax(\'POST\', {t" +
+                    "rackercode: oldValue, newtrackercode: saveInput.value});\r\n    }\r\n\r\n    function " +
+                    "loadItems() {\r\n        var saveInput = document.querySelector(\"#spoilerLogState\"" +
+                    ");\r\n        var segments = saveInput.value.split(\"-\");\r\n        if (Math.ceil(lo" +
+                    "gic.length / segmentSize) !== segments.length) {\r\n            alert(\"Invalid Spo" +
+                    "iler Log state\");\r\n            return;\r\n        }\r\n        segments = segments.m" +
+                    "ap(function(segment) { return parseInt(segment, 16); });\r\n        var locationsT" +
+                    "oCheck = [];\r\n        for (var i = 0; i < segments.length; i++) {\r\n            v" +
+                    "ar segment = segments[i];\r\n            for (var j = 0; j < segmentSize; j++) {\r\n" +
+                    "                var itemIndex = segmentSize * i + j;\r\n                if (itemIn" +
+                    "dex < logic.length) {\r\n                    var mark = ((segment >> j) % 2 == 1);" +
+                    "\r\n                    logic[itemIndex].Checked = mark;\r\n                    var " +
+                    "itemRow = document.querySelector(\"tr[data-newlocationid=\'\" + itemIndex + \"\']\");\r" +
+                    "\n                    if (itemRow) {\r\n                        logic[itemRow.datas" +
+                    "et.id].Acquired = mark;\r\n                    } else {\r\n                        l" +
+                    "ogic[itemIndex].Acquired = mark;\r\n                    }\r\n                    if " +
+                    "(!includes(locationsToCheck, itemIndex)) { locationsToCheck.push(itemIndex); }\r\n" +
+                    "                }\r\n            }\r\n        }\r\n        checkLocations(locationsToC" +
+                    "heck);\r\n    }\r\n\r\n    function checkLocations(locations) {\r\n        var itemsToCh" +
+                    "eck = [];\r\n        for (var i = 0; i < locations.length; i++) {\r\n            var" +
+                    " location = logic[locations[i]];\r\n            location.IsAvailable = \r\n         " +
+                    "       (location.RequiredItemIds === null || location.RequiredItemIds.length ===" +
+                    " 0 || all(location.RequiredItemIds, function(id) { return logic[id].Acquired || " +
+                    "logic[id].IsItemRemoved; }))\r\n                && \r\n                (location.Con" +
+                    "ditionalItemIds === null || location.ConditionalItemIds.length === 0 || any(loca" +
+                    "tion.ConditionalItemIds, function(conditionals) { return all(conditionals, funct" +
+                    "ion(id) { return logic[id].Acquired || logic[id].IsItemRemoved; }); }));\r\n      " +
+                    "      \r\n            var newLocation = find(logic, function(io) { return io.NewLo" +
+                    "cationId === locations[i]; });\r\n            if (!newLocation) {\r\n               " +
+                    " newLocation = location;\r\n            }\r\n            if (!newLocation.Acquired &" +
+                    "& location.IsFakeItem && location.IsAvailable) {\r\n                newLocation.Ac" +
+                    "quired = true;\r\n                itemsToCheck.push(newLocation.ItemId);\r\n        " +
+                    "    }\r\n            if (newLocation.Acquired && location.IsFakeItem && !location." +
+                    "IsAvailable) {\r\n                newLocation.Acquired = false;\r\n                i" +
+                    "temsToCheck.push(newLocation.ItemId);\r\n            }\r\n        \r\n            var " +
+                    "locationRows = document.querySelectorAll(\".item-replacements tr[data-newlocation" +
+                    "id=\'\" + locations[i] + \"\']\");\r\n            for (const locationRow of locationRow" +
+                    "s) {\r\n                locationRow.className = \"\";\r\n                locationRow.c" +
+                    "lassList.add(location.IsAvailable ? \"available\" : \"unavailable\");\r\n             " +
+                    "   var itemName = locationRow.querySelector(\".itemname\");\r\n                var c" +
+                    "heckbox = locationRow.querySelector(\"input\");\r\n                checkbox.checked " +
+                    "= location.Checked;\r\n                if (location.Checked) {\r\n                  " +
+                    "  itemName.classList.remove(\"spoiler\");\r\n                } else {\r\n             " +
+                    "       itemName.classList.add(\"spoiler\");\r\n                }\r\n            }\r\n   " +
+                    "     \r\n            var itemRows = document.querySelectorAll(\"#item-locations tr[" +
+                    "data-newlocationid=\'\" + locations[i] + \"\']\");\r\n            for (const itemRow of" +
+                    " itemRows) {\r\n                var itemNames = itemRow.querySelectorAll(\".newloca" +
+                    "tion\");\r\n                var checkbox = itemRow.querySelector(\"input\");\r\n       " +
+                    "         var item = logic[itemRow.dataset.id];\r\n                checkbox.checked" +
+                    " = item.Acquired;\r\n                for (const itemName of itemNames) {\r\n        " +
+                    "            if (item.Acquired) {\r\n                        itemName.classList.rem" +
+                    "ove(\"spoiler\");\r\n                    } else {\r\n                        itemName." +
+                    "classList.add(\"spoiler\");\r\n                    }\r\n                }\r\n           " +
+                    " }\r\n        }\r\n        if (itemsToCheck.length > 0) { checkItems(itemsToCheck); " +
+                    "}\r\n    }\r\n\r\n    var logic = ");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.LogicJson));
             this.Write(";\r\n\r\n    for (var i = 0; i < logic.length; i++) {\r\n        var item = logic[i];\r\n" +
                     "        if (item.Acquired) {\r\n            item.Checked = true;\r\n            var " +
@@ -265,17 +298,54 @@ namespace MMR.Randomizer.Templates
                     "arseInt(row.dataset.id);\r\n                var newLocationId = parseInt(row.datas" +
                     "et.newlocationid);\r\n                logic[newLocationId].Checked = e.target.chec" +
                     "ked;\r\n                logic[rowId].Acquired = e.target.checked;\r\n               " +
-                    " checkLocations([newLocationId]);\r\n                checkItems([rowId]);\r\n       " +
-                    "     });\r\n        }\r\n    }\r\n\r\n    document.querySelector(\"#highlight-checks\").ad" +
-                    "dEventListener(\"click\", function(e) {\r\n        var tables = document.querySelect" +
-                    "orAll(\"table.item-replacements\");\r\n        for (var i = 0; i < tables.length; i+" +
-                    "+) {\r\n            if (e.target.checked) {\r\n                tables[i].classList.a" +
-                    "dd(\"show-highlight\");\r\n            } else {\r\n                tables[i].classList" +
-                    ".remove(\"show-highlight\");\r\n            }\r\n        }\r\n    });\r\n\r\n    function to" +
-                    "ggleDarkLight() {\r\n        var body = document.getElementsByTagName(\'body\')[0];\r" +
-                    "\n        var currentClassBody = body.className;\r\n        body.className = curren" +
-                    "tClassBody === \"dark-mode\" ? \"light-mode\" : \"dark-mode\";\r\n    }\r\n</script>\r\n</bo" +
-                    "dy>\r\n</html>\r\n");
+                    " checkLocations([newLocationId]);\r\n                checkItems([rowId]);\r\n\t\t\t\tsav" +
+                    "eItems().then((resp) => {\r\n\t\t\t\t\tswitch (resp.StatusCode) {\r\n\t\t\t\t\t\tcase 1: break;" +
+                    "\r\n\t\t\t\t\t\tcase 2: \r\n\t\t\t\t\t\t\tvar newState = e.target.checked;\r\n\t\t\t\t\t\t\tdocument.query" +
+                    "Selector(\'#spoilerLogState\').value = resp.NewTrackerCode; loadItems();\r\n\t\t\t\t\t\t\te" +
+                    ".target.checked = newState;\r\n\t\t\t\t\t\t\te.target.dispatchEvent(new Event(\'click\'));\r" +
+                    "\n\t\t\t\t\t\t\tbreak;\r\n\t\t\t\t\t\tdefault:\r\n\t\t\t\t\t\t\tsetupFailure(resp.StatusMessage);\r\n\t\t\t\t\t\t" +
+                    "\tbreak;\r\n\t\t\t\t\t}\r\n\t\t\t\t}).catch(setupFailure);\r\n            });\r\n        }\r\n    }\r" +
+                    "\n\r\n    function toggleDarkLight() {\r\n        var body = document.querySelector(\'" +
+                    "body\');\r\n        var currentClassBody = body.className;\r\n        body.className " +
+                    "= currentClassBody === \"dark-mode\" ? \"light-mode\" : \"dark-mode\";\r\n\t\tif (!!localS" +
+                    "torage) { localStorage.setItem(\'mode\', body.className); }\r\n    }\r\n\tif (!!localSt" +
+                    "orage) { \r\n\t\tdocument.querySelector(\'body\').className = localStorage.getItem(\'mo" +
+                    "de\') || \'light-mode\'; \r\n\t\tdocument.querySelector(\'#spoilerWebService\').value = l" +
+                    "ocalStorage.getItem(\'svcUrl\') || \'");
+            this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.WebService));
+            this.Write("\';\r\n\t}\r\n\t\r\n\tvar intervalId, curSeed = ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.Seed));
+            this.Write(";\r\n\tfunction initialSetup() {\r\n\t\tdocument.querySelector(\'details\').open = false;\r" +
+                    "\n\t\tvar input = document.getElementById(\"spoilerWebService\");\r\n\t\tinput.readOnly =" +
+                    " true;\r\n\t\tajax(\'GET\').then((resp) => {\r\n\t\t\tswitch (resp.StatusCode) {\r\n\t\t\t\tcase " +
+                    "1: \r\n\t\t\t\t\tlocalStorage.setItem(\'svcUrl\', document.getElementById(\"spoilerWebServ" +
+                    "ice\").value);\r\n\t\t\t\t\tdocument.querySelector(\'#spoilerLogState\').value = resp.NewT" +
+                    "rackerCode; loadItems();\r\n\t\t\t\t\tintervalId = setInterval(periodicCheck, 10000);\r\n" +
+                    "\t\t\t\t\tbreak;\r\n\t\t\t\tcase 11: \r\n\t\t\t\t\tlocalStorage.setItem(\'svcUrl\', document.getElem" +
+                    "entById(\"spoilerWebService\").value);\r\n\t\t\t\t\tajax(\'PUT\', {newtrackercode: document" +
+                    ".querySelector(\'#spoilerLogState\').value}).then((resp) => {\r\n\t\t\t\t\t\tif (resp.Stat" +
+                    "usCode != 1) { setupFailure(resp.StatusMessage); }\r\n\t\t\t\t\t}).catch(setupFailure);" +
+                    "\r\n\t\t\t\t\tintervalId = setInterval(periodicCheck, 10000);\r\n\t\t\t\t\tbreak;\r\n\t\t\t\tdefault" +
+                    ":\r\n\t\t\t\t\tsetupFailure(resp.StatusMessage);\r\n\t\t\t\t\tbreak;\r\n\t\t\t}\r\n\t\t}).catch(setupFa" +
+                    "ilure);\r\n\t}\r\n\tfunction periodicCheck() {\r\n\t\tajax(\'GET\').then((resp) => {\r\n\t\t\tdoc" +
+                    "ument.querySelector(\'#spoilerLogState\').value = resp.NewTrackerCode; loadItems()" +
+                    ";\r\n\t\t}).catch(setupFailure);\r\n\t}\r\n\tfunction setupFailure(errMsg) {\r\n\t\tif (!!errM" +
+                    "sg || typeof errMsg !== \'string\') { errMsg = \'\'; }\r\n\t\tclearInterval(intervalId);" +
+                    "\r\n\t\tvar input = document.getElementById(\"spoilerWebService\");\r\n\t\tdocument.queryS" +
+                    "elector(\'details\').open = true;\r\n\t\twindow.scrollTo(0, 0);\r\n\t\tinput.readOnly = fa" +
+                    "lse; input.focus();\r\n\t\talert(\'The Spoiler Web Service did not respond. \' + errMs" +
+                    "g + \' Please specify the correct URL to use.\');\r\n\t}\r\n\tdocument.querySelector(\'#s" +
+                    "poilerWebService\').addEventListener(\"keypress\", function(event) { if (!document." +
+                    "getElementById(\"spoilerWebService\").readOnly && event.keyCode === 13) { initialS" +
+                    "etup(); } });\r\n\tdocument.querySelector(\'#spoilerLogState\').value = getItemList()" +
+                    ";\r\n\tinitialSetup();\r\n\t\r\n\tfunction ajax(method, data) {\r\n\t\treturn fetch(getEndpoi" +
+                    "nt() + qs(data), {\r\n\t\t\tmethod: method,\r\n\t\t\theaders: {\r\n\t\t\t\t\'Accept\': \'applicatio" +
+                    "n/json\',\r\n\t\t\t\t\'ngrok-skip-browser-warning\': \'1\'\r\n\t\t\t}\r\n\t\t}).then((resp) => resp." +
+                    "json());\r\n\t}\r\n\tfunction getEndpoint() { return document.getElementById(\"spoilerW" +
+                    "ebService\").value + \'?seed=\' + curSeed.toString(); }\r\n\tfunction qs(data) { \r\n\t\ti" +
+                    "f (!data) return \'\';\r\n\t\tvar returnVal = \'\';\r\n\t\tfor (let key in data) { returnVal" +
+                    " += \'&\' + key + \'=\' + encodeURIComponent(data[key]); }\r\n\t\treturn returnVal; \r\n\t}" +
+                    "\r\n</script>\r\n</body>\r\n</html>\r\n");
             return this.GenerationEnvironment.ToString();
         }
     }

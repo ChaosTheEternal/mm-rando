@@ -960,7 +960,7 @@ namespace MMR.UI.Forms
 
         private void bLoadLogic_Click(object sender, EventArgs e)
         {
-            if(openLogic.ShowDialog() == DialogResult.OK)
+            if (openLogic.ShowDialog() == DialogResult.OK)
             {
                 _configuration.GameplaySettings.UserLogicFileName = openLogic.FileName;
                 tbUserLogic.Text = Path.GetFileNameWithoutExtension(_configuration.GameplaySettings.UserLogicFileName);
@@ -1047,6 +1047,7 @@ namespace MMR.UI.Forms
             cN64.Checked = _configuration.OutputSettings.GenerateROM;
             cVC.Checked = _configuration.OutputSettings.OutputVC;
             cPatch.Checked = _configuration.OutputSettings.GeneratePatch;
+            tService.Text = _configuration.OutputSettings.WebServiceURL;
 
             cItemPlacement.SelectedIndex = (int)_configuration.GameplaySettings.ItemPlacement;
             cMixSongs.Checked = _configuration.GameplaySettings.AddSongs;
@@ -1204,7 +1205,7 @@ namespace MMR.UI.Forms
 
             nMaxGossipWotH.Value = _configuration.GameplaySettings.OverrideNumberOfRequiredGossipHints ?? 3;
             nMaxGossipFoolish.Value = _configuration.GameplaySettings.OverrideNumberOfNonRequiredGossipHints ?? 3;
-            nMaxGossipCT.Value = _configuration.GameplaySettings.OverrideMaxNumberOfClockTownGossipHints?? 2;
+            nMaxGossipCT.Value = _configuration.GameplaySettings.OverrideMaxNumberOfClockTownGossipHints ?? 2;
 
             nMaxGaroWotH.Value = _configuration.GameplaySettings.OverrideNumberOfRequiredGaroHints ?? 2;
             nMaxGaroFoolish.Value = _configuration.GameplaySettings.OverrideNumberOfNonRequiredGaroHints ?? 2;
@@ -1240,6 +1241,11 @@ namespace MMR.UI.Forms
             {
                 cDummy.Select();
             }
+        }
+
+        private void tService_TextChanged(object sender, EventArgs e)
+        {
+            UpdateSingleSetting(() => _configuration.OutputSettings.WebServiceURL = tService.Text.Trim());
         }
 
         private void cN64_CheckedChanged(object sender, EventArgs e)
@@ -1994,6 +2000,7 @@ namespace MMR.UI.Forms
 
             bRandomise.Enabled = v;
             tSeed.Enabled = v;
+            tService.Enabled = v;
             tSettings.Enabled = v;
             bLoadPatch.Enabled = v;
             bApplyPatch.Enabled = v;
@@ -2031,6 +2038,7 @@ namespace MMR.UI.Forms
             };
 
             tSeed.Text = Math.Abs(Environment.TickCount).ToString();
+            tService.Text = ""; //Where can I save/load this from?
 
             tbUserLogic.Enabled = false;
             bLoadLogic.Enabled = false;
@@ -2160,7 +2168,7 @@ namespace MMR.UI.Forms
                 _configuration.GameplaySettings.Logic = null;
             }
         }
-        
+
         private void LoadSettings(string filename = null)
         {
             var path = Path.ChangeExtension(filename ?? Path.Combine(Values.MainDirectory, DEFAULT_SETTINGS_FILENAME), SETTINGS_EXTENSION);
@@ -2318,7 +2326,7 @@ namespace MMR.UI.Forms
         private void cLowHealthSFXComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             // should probably make the object[] obj support both string and index to avoid this search, but it's low use
-            var comboboxArrayObj = cLowHealthSFXComboBox.Items[ cLowHealthSFXComboBox.SelectedIndex ];
+            var comboboxArrayObj = cLowHealthSFXComboBox.Items[cLowHealthSFXComboBox.SelectedIndex];
             var SFXOptionList = Enum.GetValues(typeof(LowHealthSFX)).Cast<LowHealthSFX>().ToList();
             var SFXOption = SFXOptionList.Find(u => u.ToString() == comboboxArrayObj.ToString());
             UpdateSingleSetting(() => _configuration.CosmeticSettings.LowHealthSFX = SFXOption);

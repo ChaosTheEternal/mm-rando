@@ -45,6 +45,11 @@ namespace MMR.Randomizer.Models.Settings
         /// </summary>
         public bool GeneratePatch { get; set; }
 
+        /// <summary>
+        /// Web Service for syncing updates
+        /// </summary>
+        public string WebServiceURL { get; set; }
+
         public string Validate()
         {
             if (!GenerateROM && !OutputVC && (InputPatchFilename != null || (!GeneratePatch && !GenerateSpoilerLog && !GenerateHTMLLog)))

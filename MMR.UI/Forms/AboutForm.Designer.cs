@@ -29,58 +29,63 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
-            this.lAboutText = new System.Windows.Forms.Label();
-            this.lAboutTitle = new System.Windows.Forms.Label();
-            this.discordLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.SuspendLayout();
+            lAboutText = new System.Windows.Forms.Label();
+            lAboutTitle = new System.Windows.Forms.Label();
+            discordLinkLabel = new System.Windows.Forms.LinkLabel();
+            SuspendLayout();
             // 
             // lAboutText
             // 
-            this.lAboutText.Location = new System.Drawing.Point(27, 33);
-            this.lAboutText.Name = "lAboutText";
-            this.lAboutText.Size = new System.Drawing.Size(308, 175);
-            this.lAboutText.TabIndex = 0;
-            this.lAboutText.Text = resources.GetString("lAboutText.Text");
-            this.lAboutText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lAboutText.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lAboutText.Location = new System.Drawing.Point(31, 38);
+            lAboutText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lAboutText.Name = "lAboutText";
+            lAboutText.Size = new System.Drawing.Size(359, 246);
+            lAboutText.TabIndex = 0;
+            lAboutText.Text = resources.GetString("lAboutText.Text");
+            lAboutText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lAboutTitle
             // 
-            this.lAboutTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lAboutTitle.Location = new System.Drawing.Point(0, 1);
-            this.lAboutTitle.Name = "lAboutTitle";
-            this.lAboutTitle.Size = new System.Drawing.Size(359, 27);
-            this.lAboutTitle.TabIndex = 1;
-            this.lAboutTitle.Text = "Majora\'s Mask Randomizer";
-            this.lAboutTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lAboutTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            lAboutTitle.Location = new System.Drawing.Point(0, 1);
+            lAboutTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lAboutTitle.Name = "lAboutTitle";
+            lAboutTitle.Size = new System.Drawing.Size(419, 31);
+            lAboutTitle.TabIndex = 1;
+            lAboutTitle.Text = "Majora's Mask Randomizer";
+            lAboutTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // discordLinkLabel
             // 
-            this.discordLinkLabel.AutoSize = true;
-            this.discordLinkLabel.Location = new System.Drawing.Point(108, 116);
-            this.discordLinkLabel.Name = "discordLinkLabel";
-            this.discordLinkLabel.Size = new System.Drawing.Size(141, 13);
-            this.discordLinkLabel.TabIndex = 2;
-            this.discordLinkLabel.TabStop = true;
-            this.discordLinkLabel.Text = "https://discord.gg/8qbreUM";
-            this.discordLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.discordLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.discordLinkLabel_LinkClicked);
+            discordLinkLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            discordLinkLabel.AutoSize = true;
+            discordLinkLabel.Location = new System.Drawing.Point(126, 148);
+            discordLinkLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            discordLinkLabel.Name = "discordLinkLabel";
+            discordLinkLabel.Size = new System.Drawing.Size(157, 15);
+            discordLinkLabel.TabIndex = 2;
+            discordLinkLabel.TabStop = true;
+            discordLinkLabel.Text = "https://discord.gg/8qbreUM";
+            discordLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            discordLinkLabel.LinkClicked += discordLinkLabel_LinkClicked;
             // 
             // AboutForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(359, 216);
-            this.Controls.Add(this.discordLinkLabel);
-            this.Controls.Add(this.lAboutTitle);
-            this.Controls.Add(this.lAboutText);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.Name = "AboutForm";
-            this.Text = "About";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(419, 293);
+            Controls.Add(discordLinkLabel);
+            Controls.Add(lAboutTitle);
+            Controls.Add(lAboutText);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            Name = "AboutForm";
+            Text = "About";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
