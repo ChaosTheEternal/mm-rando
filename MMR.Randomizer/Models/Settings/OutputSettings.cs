@@ -48,7 +48,7 @@ namespace MMR.Randomizer.Models.Settings
         /// <summary>
         /// Web Service for syncing updates
         /// </summary>
-        public string WebServiceURL { get; set; }
+        public string WebServiceDN { get; set; }
 
         public string Validate()
         {

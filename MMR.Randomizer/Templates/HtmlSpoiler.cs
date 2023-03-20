@@ -73,10 +73,10 @@ namespace MMR.Randomizer.Templates
 
     #spoilerLogState { width: 560px; }
 </style>
-</head>
-<body class=""light-mode"">
-<details><summary>Randomizer Information</summary>
-<p><label><b>Version: </b></label><span>");
+<title>Majora's Mask Randomizer Tracker - Seed ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.Seed));
+            this.Write("</title>\r\n</head>\r\n<body class=\"light-mode\">\r\n<details><summary>Randomizer Inform" +
+                    "ation</summary>\r\n<p><label><b>Version: </b></label><span>");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.Version));
             this.Write("</span></p>\r\n<p><label><b>Settings: </b></label><code style=\"word-break: break-al" +
                     "l;\">");

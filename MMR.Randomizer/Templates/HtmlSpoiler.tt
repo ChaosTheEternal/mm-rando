@@ -51,6 +51,7 @@
 
     #spoilerLogState { width: 560px; }
 </style>
+<title>Majora's Mask Randomizer Tracker - Seed <#= spoiler.Seed #></title>
 </head>
 <body class="light-mode">
 <details><summary>Randomizer Information</summary>

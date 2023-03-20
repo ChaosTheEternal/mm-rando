@@ -2637,9 +2637,9 @@ namespace MMR.UI.Forms
             label11.Location = new Point(1, 44);
             label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label11.Name = "label11";
-            label11.Size = new Size(71, 15);
+            label11.Size = new Size(69, 15);
             label11.TabIndex = 7;
-            label11.Text = "Tracker URL:";
+            label11.Text = "Tracker Site:";
             // 
             // tpPatchSettings
             // 

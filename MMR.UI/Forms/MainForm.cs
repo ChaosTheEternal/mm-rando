@@ -22,6 +22,9 @@ using System.Text.RegularExpressions;
 using MMR.Randomizer.Constants;
 using System.Threading;
 using MMR.UI.Controls;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace MMR.UI.Forms
 {
@@ -830,11 +833,55 @@ namespace MMR.UI.Forms
 
         private void bgWorker_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (!String.IsNullOrWhiteSpace(_configuration.OutputSettings.WebServiceDN) && MessageBox.Show("Do you want to upload the tracker to the tracking server?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                var trackerPath = Path.Combine(Path.GetDirectoryName(_configuration.OutputSettings.OutputROMFilename), Path.GetFileNameWithoutExtension(_configuration.OutputSettings.OutputROMFilename) + "_Tracker.html");
+                var client = new HttpClient();
+                var data = new System.Net.Http.StringContent(Convert.ToBase64String(System.IO.File.ReadAllBytes(trackerPath)));
+                var resp = client.PostAsync($"{_configuration.OutputSettings.WebServiceDN.TrimEnd('/')}/uploader.php?seed={Convert.ToInt32(tSeed.Text)}", data);
+                resp.ContinueWith(UploadComplete, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
+            }
             pProgress.Value = 0;
             lStatus.Text = "Ready...";
             EnableAllControls(true);
             ToggleCheckBoxes();
             TogglePatchSettings(ttOutput.SelectedTab.TabIndex == 0);
+        }
+
+        private void UploadComplete(Task<HttpResponseMessage> arg1, object arg2)
+        {
+            var resp = arg1.Result;
+            if (resp.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var result = JsonSerializer.Deserialize<UploadResult>(resp.Content.ReadAsStringAsync().Result);
+                    if (result.StatusCode == 1)
+                    {
+                        var finalUrl = $"{_configuration.OutputSettings.WebServiceDN.TrimEnd('/')}/{result.PathToEditor}";
+                        Clipboard.SetText(finalUrl);
+                        MessageBox.Show($"Tracker file uploaded successfully and can be viewed at:\r\n\r\n{finalUrl}\r\n\r\nTracker URL has been copied to your clipboard.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Tracker failed to upload: [{resp.StatusCode}] {resp.RequestMessage}", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Tracker failed to upload: unreadable response, {e.Message}", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show($"Tracker failed to upload: received HTTP {resp.StatusCode} response", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private class UploadResult
+        {
+            public int StatusCode { get; set; }
+            public string PathToEditor { get; set; }
+            public string StatusMessage { get; set; }
         }
 
         private void bgWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -1047,7 +1094,7 @@ namespace MMR.UI.Forms
             cN64.Checked = _configuration.OutputSettings.GenerateROM;
             cVC.Checked = _configuration.OutputSettings.OutputVC;
             cPatch.Checked = _configuration.OutputSettings.GeneratePatch;
-            tService.Text = _configuration.OutputSettings.WebServiceURL;
+            tService.Text = _configuration.OutputSettings.WebServiceDN;
 
             cItemPlacement.SelectedIndex = (int)_configuration.GameplaySettings.ItemPlacement;
             cMixSongs.Checked = _configuration.GameplaySettings.AddSongs;
@@ -1245,7 +1292,8 @@ namespace MMR.UI.Forms
 
         private void tService_TextChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _configuration.OutputSettings.WebServiceURL = tService.Text.Trim());
+            if (tService.Text.Trim().Contains(".php")) { tService.Text = tService.Text.Substring(0, tService.Text.LastIndexOf('/') + 1); } //we only want the domain and path
+            UpdateSingleSetting(() => _configuration.OutputSettings.WebServiceDN = tService.Text.Trim());
         }
 
         private void cN64_CheckedChanged(object sender, EventArgs e)
