@@ -46,9 +46,14 @@ namespace MMR.Randomizer.Models.Settings
         public bool GeneratePatch { get; set; }
 
         /// <summary>
-        /// Web Service for syncing updates
+        /// Web Service domain for uploading the tracker and where the tracker syncs updates
         /// </summary>
         public string WebServiceDN { get; set; }
+
+        /// <summary>
+        /// Web Service Authorization Key to specify who we are and allow uploads
+        /// </summary>
+        public string WebAuthKey { get; set; }
 
         public string Validate()
         {

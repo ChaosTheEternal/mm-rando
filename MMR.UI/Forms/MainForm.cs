@@ -833,12 +833,14 @@ namespace MMR.UI.Forms
 
         private void bgWorker_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (!String.IsNullOrWhiteSpace(_configuration.OutputSettings.WebServiceDN) && MessageBox.Show("Do you want to upload the tracker to the tracking server?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (!String.IsNullOrWhiteSpace(_configuration.OutputSettings.WebServiceDN)
+                && !String.IsNullOrWhiteSpace(_configuration.OutputSettings.WebAuthKey)
+                && MessageBox.Show("Do you want to upload the tracker to the tracking server?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 var trackerPath = Path.Combine(Path.GetDirectoryName(_configuration.OutputSettings.OutputROMFilename), Path.GetFileNameWithoutExtension(_configuration.OutputSettings.OutputROMFilename) + "_Tracker.html");
                 var client = new HttpClient();
                 var data = new System.Net.Http.StringContent(Convert.ToBase64String(System.IO.File.ReadAllBytes(trackerPath)));
-                var resp = client.PostAsync($"{_configuration.OutputSettings.WebServiceDN.TrimEnd('/')}/uploader.php?seed={Convert.ToInt32(tSeed.Text)}", data);
+                var resp = client.PostAsync($"{_configuration.OutputSettings.WebServiceDN.TrimEnd('/')}/ManageEditor.php?seed={Convert.ToInt32(tSeed.Text)}&auth={_configuration.OutputSettings.WebAuthKey}", data);
                 resp.ContinueWith(UploadComplete, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
             }
             pProgress.Value = 0;
@@ -860,6 +862,8 @@ namespace MMR.UI.Forms
                     {
                         var finalUrl = $"{_configuration.OutputSettings.WebServiceDN.TrimEnd('/')}/{result.PathToEditor}";
                         Clipboard.SetText(finalUrl);
+                        //TODO: Would be nicer to make the link clickable, but that means a custom dialog just for this
+                        // Otherwise, if you want to be lazy, could use the "help file" button and make that the link
                         MessageBox.Show($"Tracker file uploaded successfully and can be viewed at:\r\n\r\n{finalUrl}\r\n\r\nTracker URL has been copied to your clipboard.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
@@ -1294,6 +1298,11 @@ namespace MMR.UI.Forms
         {
             if (tService.Text.Trim().Contains(".php")) { tService.Text = tService.Text.Substring(0, tService.Text.LastIndexOf('/') + 1); } //we only want the domain and path
             UpdateSingleSetting(() => _configuration.OutputSettings.WebServiceDN = tService.Text.Trim());
+        }
+
+        private void tAuthKey_TextChanged(object sender, EventArgs e)
+        {
+            UpdateSingleSetting(() => _configuration.OutputSettings.WebAuthKey = tAuthKey.Text.Trim()); 
         }
 
         private void cN64_CheckedChanged(object sender, EventArgs e)

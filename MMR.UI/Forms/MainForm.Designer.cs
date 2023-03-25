@@ -234,6 +234,8 @@ namespace MMR.UI.Forms
             openPatch = new System.Windows.Forms.OpenFileDialog();
             ttOutput = new System.Windows.Forms.TabControl();
             tpOutputSettings = new System.Windows.Forms.TabPage();
+            tAuthKey = new System.Windows.Forms.TextBox();
+            label12 = new System.Windows.Forms.Label();
             tService = new System.Windows.Forms.TextBox();
             label11 = new System.Windows.Forms.Label();
             tpPatchSettings = new System.Windows.Forms.TabPage();
@@ -2412,10 +2414,11 @@ namespace MMR.UI.Forms
             // 
             // bRandomise
             // 
+            bRandomise.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             bRandomise.Location = new Point(357, 10);
             bRandomise.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             bRandomise.Name = "bRandomise";
-            bRandomise.Size = new Size(115, 54);
+            bRandomise.Size = new Size(115, 85);
             bRandomise.TabIndex = 5;
             bRandomise.Text = "Randomize";
             bRandomise.UseVisualStyleBackColor = true;
@@ -2528,7 +2531,8 @@ namespace MMR.UI.Forms
             // 
             // pProgress
             // 
-            pProgress.Location = new Point(15, 592);
+            pProgress.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            pProgress.Location = new Point(15, 631);
             pProgress.Margin = new System.Windows.Forms.Padding(2);
             pProgress.Name = "pProgress";
             pProgress.Size = new Size(762, 22);
@@ -2541,9 +2545,10 @@ namespace MMR.UI.Forms
             // 
             // lStatus
             // 
+            lStatus.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             lStatus.AutoSize = true;
             lStatus.BackColor = Color.Transparent;
-            lStatus.Location = new Point(13, 573);
+            lStatus.Location = new Point(13, 612);
             lStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             lStatus.Name = "lStatus";
             lStatus.Size = new Size(48, 15);
@@ -2576,9 +2581,10 @@ namespace MMR.UI.Forms
             // 
             // cDummy
             // 
+            cDummy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             cDummy.AutoSize = true;
             cDummy.Enabled = false;
-            cDummy.Location = new Point(684, 582);
+            cDummy.Location = new Point(684, 621);
             cDummy.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             cDummy.Name = "cDummy";
             cDummy.Size = new Size(83, 19);
@@ -2593,18 +2599,21 @@ namespace MMR.UI.Forms
             // 
             // ttOutput
             // 
+            ttOutput.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             ttOutput.Controls.Add(tpOutputSettings);
             ttOutput.Controls.Add(tpPatchSettings);
             ttOutput.Location = new Point(289, 470);
             ttOutput.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ttOutput.Name = "ttOutput";
             ttOutput.SelectedIndex = 0;
-            ttOutput.Size = new Size(490, 103);
+            ttOutput.Size = new Size(490, 142);
             ttOutput.TabIndex = 15;
             ttOutput.SelectedIndexChanged += ttOutput_Changed;
             // 
             // tpOutputSettings
             // 
+            tpOutputSettings.Controls.Add(tAuthKey);
+            tpOutputSettings.Controls.Add(label12);
             tpOutputSettings.Controls.Add(tService);
             tpOutputSettings.Controls.Add(label11);
             tpOutputSettings.Controls.Add(bRandomise);
@@ -2614,10 +2623,32 @@ namespace MMR.UI.Forms
             tpOutputSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tpOutputSettings.Name = "tpOutputSettings";
             tpOutputSettings.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            tpOutputSettings.Size = new Size(482, 75);
+            tpOutputSettings.Size = new Size(482, 114);
             tpOutputSettings.TabIndex = 0;
             tpOutputSettings.Text = "Output settings";
             tpOutputSettings.UseVisualStyleBackColor = true;
+            // 
+            // tAuthKey
+            // 
+            tAuthKey.Location = new Point(90, 70);
+            tAuthKey.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tAuthKey.MaxLength = 255;
+            tAuthKey.Name = "tAuthKey";
+            tAuthKey.Size = new Size(259, 23);
+            tAuthKey.TabIndex = 8;
+            tAuthKey.TextChanged += tAuthKey_TextChanged;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.BackColor = Color.Transparent;
+            label12.ForeColor = Color.Black;
+            label12.Location = new Point(1, 73);
+            label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label12.Name = "label12";
+            label12.Size = new Size(58, 15);
+            label12.TabIndex = 9;
+            label12.Text = "Auth Key:";
             // 
             // tService
             // 
@@ -2650,7 +2681,7 @@ namespace MMR.UI.Forms
             tpPatchSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tpPatchSettings.Name = "tpPatchSettings";
             tpPatchSettings.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            tpPatchSettings.Size = new Size(482, 75);
+            tpPatchSettings.Size = new Size(482, 114);
             tpPatchSettings.TabIndex = 1;
             tpPatchSettings.Text = "Patch settings";
             tpPatchSettings.UseVisualStyleBackColor = true;
@@ -2677,7 +2708,8 @@ namespace MMR.UI.Forms
             // 
             // bSkip
             // 
-            bSkip.Location = new Point(704, 591);
+            bSkip.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            bSkip.Location = new Point(704, 630);
             bSkip.Name = "bSkip";
             bSkip.Size = new Size(75, 23);
             bSkip.TabIndex = 17;
@@ -2691,7 +2723,7 @@ namespace MMR.UI.Forms
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            ClientSize = new Size(792, 627);
+            ClientSize = new Size(792, 666);
             Controls.Add(bSkip);
             Controls.Add(label1);
             Controls.Add(bopen);
@@ -2987,6 +3019,8 @@ namespace MMR.UI.Forms
         private System.Windows.Forms.Label lNumTricksEnabled;
         private System.Windows.Forms.TextBox tService;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox tAuthKey;
+        private System.Windows.Forms.Label label12;
     }
 }
 
