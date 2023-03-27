@@ -25,6 +25,8 @@ using MMR.UI.Controls;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MMR.UI.Forms
 {
@@ -840,7 +842,7 @@ namespace MMR.UI.Forms
                 var trackerPath = Path.Combine(Path.GetDirectoryName(_configuration.OutputSettings.OutputROMFilename), Path.GetFileNameWithoutExtension(_configuration.OutputSettings.OutputROMFilename) + "_Tracker.html");
                 var client = new HttpClient();
                 var data = new System.Net.Http.StringContent(Convert.ToBase64String(System.IO.File.ReadAllBytes(trackerPath)));
-                var resp = client.PostAsync($"{_configuration.OutputSettings.WebServiceDN.TrimEnd('/')}/ManageEditor.php?seed={Convert.ToInt32(tSeed.Text)}&auth={_configuration.OutputSettings.WebAuthKey}", data);
+                var resp = client.PostAsync($"{_configuration.OutputSettings.WebServiceDN.TrimEnd('/')}/ManageEditor.php?seed={Convert.ToInt32(tSeed.Text)}&auth={_configuration.OutputSettings.WebAuthKey}&p={GetMD5(_configuration.OutputSettings.WebPassword)}", data);
                 resp.ContinueWith(UploadComplete, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
             }
             pProgress.Value = 0;
@@ -1302,7 +1304,11 @@ namespace MMR.UI.Forms
 
         private void tAuthKey_TextChanged(object sender, EventArgs e)
         {
-            UpdateSingleSetting(() => _configuration.OutputSettings.WebAuthKey = tAuthKey.Text.Trim()); 
+            UpdateSingleSetting(() => _configuration.OutputSettings.WebAuthKey = tAuthKey.Text.Trim());
+        }
+        private void tPassword_TextChanged(object sender, EventArgs e)
+        {
+            UpdateSingleSetting(() => _configuration.OutputSettings.WebPassword = tPassword.Text.Trim());
         }
 
         private void cN64_CheckedChanged(object sender, EventArgs e)
@@ -2570,6 +2576,18 @@ namespace MMR.UI.Forms
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private string GetMD5(string input)
+        {
+            using (MD5 hasher = System.Security.Cryptography.MD5.Create())
+            {
+                var bInput = Encoding.UTF8.GetBytes(input);
+                var bOutput = hasher.ComputeHash(bInput);
+                var sb = new StringBuilder();
+                for (int i = 0; i < bOutput.Length; i++) { sb.Append(bOutput[i].ToString("x2")); }
+                return sb.ToString();
             }
         }
     }

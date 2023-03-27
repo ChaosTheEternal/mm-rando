@@ -313,39 +313,39 @@ namespace MMR.Randomizer.Templates
                     "de\') || \'light-mode\'; \r\n\t\tdocument.querySelector(\'#spoilerWebService\').value = l" +
                     "ocalStorage.getItem(\'svcUrl\') || \'");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.WebService));
-            this.Write("\';\r\n\t}\r\n\t\r\n\tvar intervalId, curSeed = ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.Seed));
-            this.Write(";\r\n\tfunction initialSetup() {\r\n\t\tdocument.querySelector(\'details\').open = false;\r" +
-                    "\n\t\tvar input = document.getElementById(\"spoilerWebService\");\r\n\t\tinput.readOnly =" +
-                    " true;\r\n\t\tajax(\'GET\').then((resp) => {\r\n\t\t\tswitch (resp.StatusCode) {\r\n\t\t\t\tcase " +
-                    "1: \r\n\t\t\t\t\tlocalStorage.setItem(\'svcUrl\', document.getElementById(\"spoilerWebServ" +
-                    "ice\").value);\r\n\t\t\t\t\tdocument.querySelector(\'#spoilerLogState\').value = resp.NewT" +
-                    "rackerCode; loadItems();\r\n\t\t\t\t\tintervalId = setInterval(periodicCheck, 10000);\r\n" +
-                    "\t\t\t\t\tbreak;\r\n\t\t\t\tcase 11: \r\n\t\t\t\t\tlocalStorage.setItem(\'svcUrl\', document.getElem" +
-                    "entById(\"spoilerWebService\").value);\r\n\t\t\t\t\tajax(\'PUT\', {newtrackercode: document" +
-                    ".querySelector(\'#spoilerLogState\').value}).then((resp) => {\r\n\t\t\t\t\t\tif (resp.Stat" +
-                    "usCode != 1) { setupFailure(resp.StatusMessage); }\r\n\t\t\t\t\t}).catch(setupFailure);" +
-                    "\r\n\t\t\t\t\tintervalId = setInterval(periodicCheck, 10000);\r\n\t\t\t\t\tbreak;\r\n\t\t\t\tdefault" +
-                    ":\r\n\t\t\t\t\tsetupFailure(resp.StatusMessage);\r\n\t\t\t\t\tbreak;\r\n\t\t\t}\r\n\t\t}).catch(setupFa" +
-                    "ilure);\r\n\t}\r\n\tfunction periodicCheck() {\r\n\t\tajax(\'GET\').then((resp) => {\r\n\t\t\tdoc" +
-                    "ument.querySelector(\'#spoilerLogState\').value = resp.NewTrackerCode; loadItems()" +
-                    ";\r\n\t\t}).catch(setupFailure);\r\n\t}\r\n\tfunction setupFailure(errMsg) {\r\n\t\tif (!!errM" +
-                    "sg || typeof errMsg !== \'string\') { errMsg = \'\'; }\r\n\t\tclearInterval(intervalId);" +
-                    "\r\n\t\tvar input = document.getElementById(\"spoilerWebService\");\r\n\t\tdocument.queryS" +
-                    "elector(\'details\').open = true;\r\n\t\twindow.scrollTo(0, 0);\r\n\t\tinput.readOnly = fa" +
-                    "lse; input.focus();\r\n\t\talert(\'The Spoiler Web Service did not respond. \' + errMs" +
-                    "g + \' Please specify the correct URL to use.\');\r\n\t}\r\n\tdocument.querySelector(\'#s" +
-                    "poilerWebService\').addEventListener(\"keypress\", function(event) { if (!document." +
-                    "getElementById(\"spoilerWebService\").readOnly && event.keyCode === 13) { initialS" +
-                    "etup(); } });\r\n\tdocument.querySelector(\'#spoilerLogState\').value = getItemList()" +
-                    ";\r\n\tinitialSetup();\r\n\t\r\n\tfunction ajax(method, data) {\r\n\t\treturn fetch(getEndpoi" +
-                    "nt() + qs(data), {\r\n\t\t\tmethod: method,\r\n\t\t\theaders: {\r\n\t\t\t\t\'Accept\': \'applicatio" +
-                    "n/json\',\r\n\t\t\t\t\'ngrok-skip-browser-warning\': \'1\'\r\n\t\t\t}\r\n\t\t}).then((resp) => resp." +
-                    "json());\r\n\t}\r\n\tfunction getEndpoint() { return document.getElementById(\"spoilerW" +
-                    "ebService\").value + \'?seed=\' + curSeed.toString(); }\r\n\tfunction qs(data) { \r\n\t\ti" +
-                    "f (!data) return \'\';\r\n\t\tvar returnVal = \'\';\r\n\t\tfor (let key in data) { returnVal" +
-                    " += \'&\' + key + \'=\' + encodeURIComponent(data[key]); }\r\n\t\treturn returnVal; \r\n\t}" +
-                    "\r\n</script>\r\n</body>\r\n</html>\r\n");
+            this.Write("\';\r\n\t}\r\n\t\r\n\tvar intervalId;\r\n\tfunction initialSetup() {\r\n\t\tdocument.querySelector" +
+                    "(\'details\').open = false;\r\n\t\tvar input = document.getElementById(\"spoilerWebServ" +
+                    "ice\");\r\n\t\tinput.readOnly = true;\r\n\t\tajax(\'GET\').then((resp) => {\r\n\t\t\tswitch (res" +
+                    "p.StatusCode) {\r\n\t\t\t\tcase 1: \r\n\t\t\t\t\tlocalStorage.setItem(\'svcUrl\', document.getE" +
+                    "lementById(\"spoilerWebService\").value);\r\n\t\t\t\t\tdocument.querySelector(\'#spoilerLo" +
+                    "gState\').value = resp.NewTrackerCode; loadItems();\r\n\t\t\t\t\tintervalId = setInterva" +
+                    "l(periodicCheck, 10000);\r\n\t\t\t\t\tbreak;\r\n\t\t\t\tcase 11: \r\n\t\t\t\t\tlocalStorage.setItem(" +
+                    "\'svcUrl\', document.getElementById(\"spoilerWebService\").value);\r\n\t\t\t\t\tajax(\'POST\'" +
+                    ", {trackercode: \'\', newtrackercode: document.querySelector(\'#spoilerLogState\').v" +
+                    "alue}).then((resp) => {\r\n\t\t\t\t\t\tif (resp.StatusCode != 1) { setupFailure(resp.Sta" +
+                    "tusMessage); }\r\n\t\t\t\t\t}).catch(setupFailure);\r\n\t\t\t\t\tintervalId = setInterval(peri" +
+                    "odicCheck, 10000);\r\n\t\t\t\t\tbreak;\r\n\t\t\t\tdefault:\r\n\t\t\t\t\tsetupFailure(resp.StatusMess" +
+                    "age);\r\n\t\t\t\t\tbreak;\r\n\t\t\t}\r\n\t\t}).catch(setupFailure);\r\n\t}\r\n\tfunction periodicCheck" +
+                    "() {\r\n\t\tajax(\'GET\').then((resp) => {\r\n\t\t\tdocument.querySelector(\'#spoilerLogStat" +
+                    "e\').value = resp.NewTrackerCode; loadItems();\r\n\t\t}).catch(setupFailure);\r\n\t}\r\n\tf" +
+                    "unction setupFailure(errMsg) {\r\n\t\tif (!!errMsg || typeof errMsg !== \'string\') { " +
+                    "errMsg = \'\'; }\r\n\t\tclearInterval(intervalId);\r\n\t\tvar input = document.getElementB" +
+                    "yId(\"spoilerWebService\");\r\n\t\tdocument.querySelector(\'details\').open = true;\r\n\t\tw" +
+                    "indow.scrollTo(0, 0);\r\n\t\tinput.readOnly = false; input.focus();\r\n\t\talert(\'The Sp" +
+                    "oiler Web Service did not respond. \' + errMsg + \' Please specify the correct URL" +
+                    " to use.\');\r\n\t}\r\n\tdocument.querySelector(\'#spoilerWebService\').addEventListener(" +
+                    "\"keypress\", function(event) { if (!document.getElementById(\"spoilerWebService\")." +
+                    "readOnly && event.keyCode === 13) { initialSetup(); } });\r\n\tdocument.querySelect" +
+                    "or(\'#spoilerLogState\').value = getItemList();\r\n\tinitialSetup();\r\n\t\r\n\tfunction aj" +
+                    "ax(method, data) {\r\n\t\treturn fetch(getEndpoint() + qs(data), {\r\n\t\t\tmethod: metho" +
+                    "d,\r\n\t\t\theaders: {\r\n\t\t\t\t\'Accept\': \'application/json\',\r\n\t\t\t\t\'ngrok-skip-browser-wa" +
+                    "rning\': \'1\'\r\n\t\t\t}\r\n\t\t}).then((resp) => resp.json());\r\n\t}\r\n\tfunction getEndpoint(" +
+                    ") { return document.getElementById(\"spoilerWebService\").value + \'?auth=");
+            this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.WebAuthKey));
+            this.Write("&editor=***EDITORID***\'; }\r\n\tfunction qs(data) { \r\n\t\tif (!data) return \'\';\r\n\t\tvar" +
+                    " returnVal = \'\';\r\n\t\tfor (let key in data) { returnVal += \'&\' + key + \'=\' + encod" +
+                    "eURIComponent(data[key]); }\r\n\t\treturn returnVal; \r\n\t}\r\n</script>\r\n</body>\r\n</htm" +
+                    "l>\r\n");
             return this.GenerationEnvironment.ToString();
         }
     }

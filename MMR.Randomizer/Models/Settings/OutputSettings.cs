@@ -55,6 +55,11 @@ namespace MMR.Randomizer.Models.Settings
         /// </summary>
         public string WebAuthKey { get; set; }
 
+        /// <summary>
+        /// Web Service Password to confirm authorization, this is not used by the generator, but is stored for convenience
+        /// </summary>
+        public string WebPassword { get; set; }
+
         public string Validate()
         {
             if (!GenerateROM && !OutputVC && (InputPatchFilename != null || (!GeneratePatch && !GenerateSpoilerLog && !GenerateHTMLLog)))

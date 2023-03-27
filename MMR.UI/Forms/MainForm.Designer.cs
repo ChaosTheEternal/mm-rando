@@ -234,7 +234,8 @@ namespace MMR.UI.Forms
             openPatch = new System.Windows.Forms.OpenFileDialog();
             ttOutput = new System.Windows.Forms.TabControl();
             tpOutputSettings = new System.Windows.Forms.TabPage();
-            tAuthKey = new System.Windows.Forms.TextBox();
+            tPassword = new Controls.CueTextBox();
+            tAuthKey = new Controls.CueTextBox();
             label12 = new System.Windows.Forms.Label();
             tService = new System.Windows.Forms.TextBox();
             label11 = new System.Windows.Forms.Label();
@@ -2418,8 +2419,8 @@ namespace MMR.UI.Forms
             bRandomise.Location = new Point(357, 10);
             bRandomise.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             bRandomise.Name = "bRandomise";
-            bRandomise.Size = new Size(115, 85);
-            bRandomise.TabIndex = 5;
+            bRandomise.Size = new Size(115, 54);
+            bRandomise.TabIndex = 9;
             bRandomise.Text = "Randomize";
             bRandomise.UseVisualStyleBackColor = true;
             bRandomise.Click += bRandomise_Click;
@@ -2532,7 +2533,7 @@ namespace MMR.UI.Forms
             // pProgress
             // 
             pProgress.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            pProgress.Location = new Point(15, 631);
+            pProgress.Location = new Point(15, 616);
             pProgress.Margin = new System.Windows.Forms.Padding(2);
             pProgress.Name = "pProgress";
             pProgress.Size = new Size(762, 22);
@@ -2548,7 +2549,7 @@ namespace MMR.UI.Forms
             lStatus.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             lStatus.AutoSize = true;
             lStatus.BackColor = Color.Transparent;
-            lStatus.Location = new Point(13, 612);
+            lStatus.Location = new Point(13, 597);
             lStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             lStatus.Name = "lStatus";
             lStatus.Size = new Size(48, 15);
@@ -2584,7 +2585,7 @@ namespace MMR.UI.Forms
             cDummy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             cDummy.AutoSize = true;
             cDummy.Enabled = false;
-            cDummy.Location = new Point(684, 621);
+            cDummy.Location = new Point(684, 606);
             cDummy.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             cDummy.Name = "cDummy";
             cDummy.Size = new Size(83, 19);
@@ -2606,12 +2607,13 @@ namespace MMR.UI.Forms
             ttOutput.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ttOutput.Name = "ttOutput";
             ttOutput.SelectedIndex = 0;
-            ttOutput.Size = new Size(490, 142);
+            ttOutput.Size = new Size(490, 127);
             ttOutput.TabIndex = 15;
             ttOutput.SelectedIndexChanged += ttOutput_Changed;
             // 
             // tpOutputSettings
             // 
+            tpOutputSettings.Controls.Add(tPassword);
             tpOutputSettings.Controls.Add(tAuthKey);
             tpOutputSettings.Controls.Add(label12);
             tpOutputSettings.Controls.Add(tService);
@@ -2623,19 +2625,31 @@ namespace MMR.UI.Forms
             tpOutputSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tpOutputSettings.Name = "tpOutputSettings";
             tpOutputSettings.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            tpOutputSettings.Size = new Size(482, 114);
+            tpOutputSettings.Size = new Size(482, 99);
             tpOutputSettings.TabIndex = 0;
             tpOutputSettings.Text = "Output settings";
             tpOutputSettings.UseVisualStyleBackColor = true;
             // 
+            // tPassword
+            // 
+            tPassword.Cue = "Password";
+            tPassword.Location = new Point(357, 70);
+            tPassword.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tPassword.MaxLength = 255;
+            tPassword.Name = "tPassword";
+            tPassword.Size = new Size(115, 23);
+            tPassword.TabIndex = 8;
+            tPassword.TextChanged += tPassword_TextChanged;
+            // 
             // tAuthKey
             // 
+            tAuthKey.Cue = "Auth Key";
             tAuthKey.Location = new Point(90, 70);
             tAuthKey.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tAuthKey.MaxLength = 255;
             tAuthKey.Name = "tAuthKey";
             tAuthKey.Size = new Size(259, 23);
-            tAuthKey.TabIndex = 8;
+            tAuthKey.TabIndex = 7;
             tAuthKey.TextChanged += tAuthKey_TextChanged;
             // 
             // label12
@@ -2646,9 +2660,9 @@ namespace MMR.UI.Forms
             label12.Location = new Point(1, 73);
             label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label12.Name = "label12";
-            label12.Size = new Size(58, 15);
+            label12.Size = new Size(89, 15);
             label12.TabIndex = 9;
-            label12.Text = "Auth Key:";
+            label12.Text = "Authentication:";
             // 
             // tService
             // 
@@ -2709,7 +2723,7 @@ namespace MMR.UI.Forms
             // bSkip
             // 
             bSkip.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            bSkip.Location = new Point(704, 630);
+            bSkip.Location = new Point(704, 615);
             bSkip.Name = "bSkip";
             bSkip.Size = new Size(75, 23);
             bSkip.TabIndex = 17;
@@ -2723,7 +2737,7 @@ namespace MMR.UI.Forms
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            ClientSize = new Size(792, 666);
+            ClientSize = new Size(792, 651);
             Controls.Add(bSkip);
             Controls.Add(label1);
             Controls.Add(bopen);
@@ -3019,8 +3033,9 @@ namespace MMR.UI.Forms
         private System.Windows.Forms.Label lNumTricksEnabled;
         private System.Windows.Forms.TextBox tService;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox tAuthKey;
+        private MMR.UI.Controls.CueTextBox tAuthKey;
         private System.Windows.Forms.Label label12;
+        private MMR.UI.Controls.CueTextBox tPassword;
     }
 }
 

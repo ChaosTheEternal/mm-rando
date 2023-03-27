@@ -70,7 +70,8 @@ namespace MMR.Randomizer.Utils
                 DungeonEntrances = dungeonEntrances,
                 ItemList = itemList.ToList(),
                 Logic = randomized.Logic,
-                WebService = !String.IsNullOrWhiteSpace(outputSettings.WebServiceDN) ? outputSettings.WebServiceDN.TrimEnd('/') + "/status.php" : "",
+                WebService = !String.IsNullOrWhiteSpace(outputSettings.WebServiceDN) ? outputSettings.WebServiceDN.TrimEnd('/') + "/UpdateEditor.php" : "",
+                WebAuthKey = !String.IsNullOrWhiteSpace(outputSettings.WebAuthKey) ? outputSettings.WebServiceDN : "",
                 GossipHints = randomized.GossipQuotes?.ToDictionary(me => (GossipQuote) me.Id, (me) =>
                 {
                     var message = me.Message.Substring(1);
