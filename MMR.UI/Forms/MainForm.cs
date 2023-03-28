@@ -2220,7 +2220,8 @@ namespace MMR.UI.Forms
                 configurationToSave = new Configuration
                 {
                     GameplaySettings = _configuration.GameplaySettings,
-                };
+                    CosmeticSettings = _configuration.CosmeticSettings
+                }; // I understand not saving output settings, but why not cosmetic settings?
             }
             var fileInfo = new FileInfo(path);
             fileInfo.Directory.Create();
