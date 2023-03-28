@@ -1031,7 +1031,7 @@ namespace MMR.UI.Forms
             else
             {
                 validationResult = _configuration.GameplaySettings.Validate() ?? _configuration.OutputSettings.Validate();
-                var defaultOutputROMFilename = FileUtils.MakeFilenameValid($"MMR-{typeof(Randomizer).Assembly.GetName().Version}-{DateTime.UtcNow:o}");
+                var defaultOutputROMFilename = FileUtils.MakeFilenameValid($"MMR-{typeof(Randomizer).Assembly.GetName().Version}-{tSeed.Text.Trim()}-{DateTime.UtcNow:yyyyMMddHHmmss}") + ".z64";
                 saveROM.FileName = defaultOutputROMFilename;
             }
 
@@ -1101,6 +1101,8 @@ namespace MMR.UI.Forms
             cVC.Checked = _configuration.OutputSettings.OutputVC;
             cPatch.Checked = _configuration.OutputSettings.GeneratePatch;
             tService.Text = _configuration.OutputSettings.WebServiceDN;
+            tAuthKey.Text = _configuration.OutputSettings.WebAuthKey;
+            tPassword.Text = _configuration.OutputSettings.WebPassword;
 
             cItemPlacement.SelectedIndex = (int)_configuration.GameplaySettings.ItemPlacement;
             cMixSongs.Checked = _configuration.GameplaySettings.AddSongs;
@@ -1786,19 +1788,13 @@ namespace MMR.UI.Forms
 
         private void mExit_Click(object sender, EventArgs e)
         {
-            SaveAndClose();
+            Application.Exit();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            SaveAndClose();
-        }
-
-        private void SaveAndClose()
-        {
             SaveSettings();
-            Application.Exit();
         }
 
         private void mAbout_Click(object sender, EventArgs e)
@@ -2064,6 +2060,8 @@ namespace MMR.UI.Forms
             bRandomise.Enabled = v;
             tSeed.Enabled = v;
             tService.Enabled = v;
+            tAuthKey.Enabled = v;
+            tPassword.Enabled = v;
             tSettings.Enabled = v;
             bLoadPatch.Enabled = v;
             bApplyPatch.Enabled = v;
@@ -2102,6 +2100,8 @@ namespace MMR.UI.Forms
 
             tSeed.Text = Math.Abs(Environment.TickCount).ToString();
             tService.Text = ""; //Where can I save/load this from?
+            tAuthKey.Text = "";
+            tPassword.Text = "";
 
             tbUserLogic.Enabled = false;
             bLoadLogic.Enabled = false;

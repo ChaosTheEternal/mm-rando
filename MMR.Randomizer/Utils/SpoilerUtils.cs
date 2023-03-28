@@ -71,7 +71,7 @@ namespace MMR.Randomizer.Utils
                 ItemList = itemList.ToList(),
                 Logic = randomized.Logic,
                 WebService = !String.IsNullOrWhiteSpace(outputSettings.WebServiceDN) ? outputSettings.WebServiceDN.TrimEnd('/') + "/UpdateEditor.php" : "",
-                WebAuthKey = !String.IsNullOrWhiteSpace(outputSettings.WebAuthKey) ? outputSettings.WebServiceDN : "",
+                WebAuthKey = !String.IsNullOrWhiteSpace(outputSettings.WebAuthKey) ? outputSettings.WebAuthKey : "",
                 GossipHints = randomized.GossipQuotes?.ToDictionary(me => (GossipQuote) me.Id, (me) =>
                 {
                     var message = me.Message.Substring(1);

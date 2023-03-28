@@ -71,7 +71,7 @@ namespace MMR.Randomizer.Templates
     .light-mode .available .newlocation { background-color: #9999FF; }
 
 
-    #spoilerLogState { width: 560px; }
+    #spoilerWebService, #spoilerLogState { display: block; width: 100%; }
 </style>
 <title>Majora's Mask Randomizer Tracker - Seed ");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.Seed));
@@ -337,10 +337,11 @@ namespace MMR.Randomizer.Templates
                     "\"keypress\", function(event) { if (!document.getElementById(\"spoilerWebService\")." +
                     "readOnly && event.keyCode === 13) { initialSetup(); } });\r\n\tdocument.querySelect" +
                     "or(\'#spoilerLogState\').value = getItemList();\r\n\tinitialSetup();\r\n\t\r\n\tfunction aj" +
-                    "ax(method, data) {\r\n\t\treturn fetch(getEndpoint() + qs(data), {\r\n\t\t\tmethod: metho" +
-                    "d,\r\n\t\t\theaders: {\r\n\t\t\t\t\'Accept\': \'application/json\',\r\n\t\t\t\t\'ngrok-skip-browser-wa" +
-                    "rning\': \'1\'\r\n\t\t\t}\r\n\t\t}).then((resp) => resp.json());\r\n\t}\r\n\tfunction getEndpoint(" +
-                    ") { return document.getElementById(\"spoilerWebService\").value + \'?auth=");
+                    "ax(method, data) {\r\n\t\treturn fetch(getEndpoint(), {\r\n\t\t\tmethod: method,\r\n\t\t\thead" +
+                    "ers: {\r\n\t\t\t\t\'Accept\': \'application/json\',\r\n\t\t\t\t\'ngrok-skip-browser-warning\': \'1\'" +
+                    "\r\n\t\t\t},\r\n            body: JSON.stringify(data)\r\n\t\t}).then((resp) => resp.json()" +
+                    ");\r\n\t}\r\n\tfunction getEndpoint() { return document.getElementById(\"spoilerWebServ" +
+                    "ice\").value + \'?auth=");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.WebAuthKey));
             this.Write("&editor=***EDITORID***\'; }\r\n\tfunction qs(data) { \r\n\t\tif (!data) return \'\';\r\n\t\tvar" +
                     " returnVal = \'\';\r\n\t\tfor (let key in data) { returnVal += \'&\' + key + \'=\' + encod" +

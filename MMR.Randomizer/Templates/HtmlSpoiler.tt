@@ -49,7 +49,7 @@
     .light-mode .available .newlocation { background-color: #9999FF; }
 
 
-    #spoilerLogState { width: 560px; }
+    #spoilerWebService, #spoilerLogState { display: block; width: 100%; }
 </style>
 <title>Majora's Mask Randomizer Tracker - Seed <#= spoiler.Seed #></title>
 </head>
@@ -452,12 +452,13 @@
 	initialSetup();
 	
 	function ajax(method, data) {
-		return fetch(getEndpoint() + qs(data), {
+		return fetch(getEndpoint(), {
 			method: method,
 			headers: {
 				'Accept': 'application/json',
 				'ngrok-skip-browser-warning': '1'
-			}
+			},
+            body: JSON.stringify(data)
 		}).then((resp) => resp.json());
 	}
 	function getEndpoint() { return document.getElementById("spoilerWebService").value + '?auth=<#= spoiler.WebAuthKey #>&editor=***EDITORID***'; }
