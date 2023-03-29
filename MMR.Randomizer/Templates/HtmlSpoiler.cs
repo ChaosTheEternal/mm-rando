@@ -30,6 +30,9 @@ namespace MMR.Randomizer.Templates
 <html>
 <head>
 <style>
+    * { box-sizing: border-box; }
+    [hidden] { display: none; }
+	
     body.dark-mode {
       background-color: #111;
       color: #ccc;
@@ -69,7 +72,6 @@ namespace MMR.Randomizer.Templates
     .light-mode .unavailable .newlocation { background-color: #FF9999; }
     .light-mode .acquired .newlocation { background-color: #99FF99; }
     .light-mode .available .newlocation { background-color: #9999FF; }
-
 
     #spoilerWebService, #spoilerLogState { display: block; width: 100%; }
 </style>
@@ -202,61 +204,63 @@ namespace MMR.Randomizer.Templates
                     "(1 << (i%segmentSize)); }\r\n        }\r\n        return segments.map(function(s) { " +
                     "return s.toString(16); }).join(\"-\");\r\n\t}\r\n    function saveItems() {\r\n        va" +
                     "r saveInput = document.querySelector(\"#spoilerLogState\");\r\n        var oldValue " +
-                    "= saveInput.value;\r\n\t\tsaveInput.value = getItemList();\r\n\t\treturn ajax(\'POST\', {t" +
-                    "rackercode: oldValue, newtrackercode: saveInput.value});\r\n    }\r\n\r\n    function " +
-                    "loadItems() {\r\n        var saveInput = document.querySelector(\"#spoilerLogState\"" +
-                    ");\r\n        var segments = saveInput.value.split(\"-\");\r\n        if (Math.ceil(lo" +
-                    "gic.length / segmentSize) !== segments.length) {\r\n            alert(\"Invalid Spo" +
-                    "iler Log state\");\r\n            return;\r\n        }\r\n        segments = segments.m" +
-                    "ap(function(segment) { return parseInt(segment, 16); });\r\n        var locationsT" +
-                    "oCheck = [];\r\n        for (var i = 0; i < segments.length; i++) {\r\n            v" +
-                    "ar segment = segments[i];\r\n            for (var j = 0; j < segmentSize; j++) {\r\n" +
-                    "                var itemIndex = segmentSize * i + j;\r\n                if (itemIn" +
-                    "dex < logic.length) {\r\n                    var mark = ((segment >> j) % 2 == 1);" +
-                    "\r\n                    logic[itemIndex].Checked = mark;\r\n                    var " +
-                    "itemRow = document.querySelector(\"tr[data-newlocationid=\'\" + itemIndex + \"\']\");\r" +
-                    "\n                    if (itemRow) {\r\n                        logic[itemRow.datas" +
-                    "et.id].Acquired = mark;\r\n                    } else {\r\n                        l" +
-                    "ogic[itemIndex].Acquired = mark;\r\n                    }\r\n                    if " +
-                    "(!includes(locationsToCheck, itemIndex)) { locationsToCheck.push(itemIndex); }\r\n" +
-                    "                }\r\n            }\r\n        }\r\n        checkLocations(locationsToC" +
-                    "heck);\r\n    }\r\n\r\n    function checkLocations(locations) {\r\n        var itemsToCh" +
-                    "eck = [];\r\n        for (var i = 0; i < locations.length; i++) {\r\n            var" +
-                    " location = logic[locations[i]];\r\n            location.IsAvailable = \r\n         " +
-                    "       (location.RequiredItemIds === null || location.RequiredItemIds.length ===" +
-                    " 0 || all(location.RequiredItemIds, function(id) { return logic[id].Acquired || " +
-                    "logic[id].IsItemRemoved; }))\r\n                && \r\n                (location.Con" +
-                    "ditionalItemIds === null || location.ConditionalItemIds.length === 0 || any(loca" +
-                    "tion.ConditionalItemIds, function(conditionals) { return all(conditionals, funct" +
-                    "ion(id) { return logic[id].Acquired || logic[id].IsItemRemoved; }); }));\r\n      " +
-                    "      \r\n            var newLocation = find(logic, function(io) { return io.NewLo" +
-                    "cationId === locations[i]; });\r\n            if (!newLocation) {\r\n               " +
-                    " newLocation = location;\r\n            }\r\n            if (!newLocation.Acquired &" +
-                    "& location.IsFakeItem && location.IsAvailable) {\r\n                newLocation.Ac" +
-                    "quired = true;\r\n                itemsToCheck.push(newLocation.ItemId);\r\n        " +
-                    "    }\r\n            if (newLocation.Acquired && location.IsFakeItem && !location." +
-                    "IsAvailable) {\r\n                newLocation.Acquired = false;\r\n                i" +
-                    "temsToCheck.push(newLocation.ItemId);\r\n            }\r\n        \r\n            var " +
-                    "locationRows = document.querySelectorAll(\".item-replacements tr[data-newlocation" +
-                    "id=\'\" + locations[i] + \"\']\");\r\n            for (const locationRow of locationRow" +
-                    "s) {\r\n                locationRow.className = \"\";\r\n                locationRow.c" +
-                    "lassList.add(location.IsAvailable ? \"available\" : \"unavailable\");\r\n             " +
-                    "   var itemName = locationRow.querySelector(\".itemname\");\r\n                var c" +
-                    "heckbox = locationRow.querySelector(\"input\");\r\n                checkbox.checked " +
-                    "= location.Checked;\r\n                if (location.Checked) {\r\n                  " +
-                    "  itemName.classList.remove(\"spoiler\");\r\n                } else {\r\n             " +
-                    "       itemName.classList.add(\"spoiler\");\r\n                }\r\n            }\r\n   " +
-                    "     \r\n            var itemRows = document.querySelectorAll(\"#item-locations tr[" +
-                    "data-newlocationid=\'\" + locations[i] + \"\']\");\r\n            for (const itemRow of" +
-                    " itemRows) {\r\n                var itemNames = itemRow.querySelectorAll(\".newloca" +
-                    "tion\");\r\n                var checkbox = itemRow.querySelector(\"input\");\r\n       " +
-                    "         var item = logic[itemRow.dataset.id];\r\n                checkbox.checked" +
-                    " = item.Acquired;\r\n                for (const itemName of itemNames) {\r\n        " +
-                    "            if (item.Acquired) {\r\n                        itemName.classList.rem" +
-                    "ove(\"spoiler\");\r\n                    } else {\r\n                        itemName." +
-                    "classList.add(\"spoiler\");\r\n                    }\r\n                }\r\n           " +
-                    " }\r\n        }\r\n        if (itemsToCheck.length > 0) { checkItems(itemsToCheck); " +
-                    "}\r\n    }\r\n\r\n    var logic = ");
+                    "= saveInput.value;\r\n\t\tsaveInput.value = getItemList();\r\n\t\tif (isRemote()) {\r\n   " +
+                    "         return ajax(\'POST\', {trackercode: oldValue, newtrackercode: saveInput.v" +
+                    "alue});\r\n        } else {\r\n            return new Promise((rs, rj) => { rs({ Sta" +
+                    "tusCode: 1, NewTrackerCode: saveInput.value }); });\r\n        }\r\n    }\r\n\r\n    fun" +
+                    "ction loadItems() {\r\n        var saveInput = document.querySelector(\"#spoilerLog" +
+                    "State\");\r\n        var segments = saveInput.value.split(\"-\");\r\n        if (Math.c" +
+                    "eil(logic.length / segmentSize) !== segments.length) {\r\n            alert(\"Inval" +
+                    "id Spoiler Log state\");\r\n            return;\r\n        }\r\n        segments = segm" +
+                    "ents.map(function(segment) { return parseInt(segment, 16); });\r\n        var loca" +
+                    "tionsToCheck = [];\r\n        for (var i = 0; i < segments.length; i++) {\r\n       " +
+                    "     var segment = segments[i];\r\n            for (var j = 0; j < segmentSize; j+" +
+                    "+) {\r\n                var itemIndex = segmentSize * i + j;\r\n                if (" +
+                    "itemIndex < logic.length) {\r\n                    var mark = ((segment >> j) % 2 " +
+                    "== 1);\r\n                    logic[itemIndex].Checked = mark;\r\n                  " +
+                    "  var itemRow = document.querySelector(\"tr[data-newlocationid=\'\" + itemIndex + \"" +
+                    "\']\");\r\n                    if (itemRow) {\r\n                        logic[itemRow" +
+                    ".dataset.id].Acquired = mark;\r\n                    } else {\r\n                   " +
+                    "     logic[itemIndex].Acquired = mark;\r\n                    }\r\n                 " +
+                    "   if (!includes(locationsToCheck, itemIndex)) { locationsToCheck.push(itemIndex" +
+                    "); }\r\n                }\r\n            }\r\n        }\r\n        checkLocations(locati" +
+                    "onsToCheck);\r\n    }\r\n\r\n    function checkLocations(locations) {\r\n        var ite" +
+                    "msToCheck = [];\r\n        for (var i = 0; i < locations.length; i++) {\r\n         " +
+                    "   var location = logic[locations[i]];\r\n            location.IsAvailable = \r\n   " +
+                    "             (location.RequiredItemIds === null || location.RequiredItemIds.leng" +
+                    "th === 0 || all(location.RequiredItemIds, function(id) { return logic[id].Acquir" +
+                    "ed || logic[id].IsItemRemoved; }))\r\n                && \r\n                (locati" +
+                    "on.ConditionalItemIds === null || location.ConditionalItemIds.length === 0 || an" +
+                    "y(location.ConditionalItemIds, function(conditionals) { return all(conditionals," +
+                    " function(id) { return logic[id].Acquired || logic[id].IsItemRemoved; }); }));\r\n" +
+                    "            \r\n            var newLocation = find(logic, function(io) { return io" +
+                    ".NewLocationId === locations[i]; });\r\n            if (!newLocation) {\r\n         " +
+                    "       newLocation = location;\r\n            }\r\n            if (!newLocation.Acqu" +
+                    "ired && location.IsFakeItem && location.IsAvailable) {\r\n                newLocat" +
+                    "ion.Acquired = true;\r\n                itemsToCheck.push(newLocation.ItemId);\r\n  " +
+                    "          }\r\n            if (newLocation.Acquired && location.IsFakeItem && !loc" +
+                    "ation.IsAvailable) {\r\n                newLocation.Acquired = false;\r\n           " +
+                    "     itemsToCheck.push(newLocation.ItemId);\r\n            }\r\n        \r\n          " +
+                    "  var locationRows = document.querySelectorAll(\".item-replacements tr[data-newlo" +
+                    "cationid=\'\" + locations[i] + \"\']\");\r\n            for (const locationRow of locat" +
+                    "ionRows) {\r\n                locationRow.className = \"\";\r\n                locatio" +
+                    "nRow.classList.add(location.IsAvailable ? \"available\" : \"unavailable\");\r\n       " +
+                    "         var itemName = locationRow.querySelector(\".itemname\");\r\n               " +
+                    " var checkbox = locationRow.querySelector(\"input\");\r\n                checkbox.ch" +
+                    "ecked = location.Checked;\r\n                if (location.Checked) {\r\n            " +
+                    "        itemName.classList.remove(\"spoiler\");\r\n                } else {\r\n       " +
+                    "             itemName.classList.add(\"spoiler\");\r\n                }\r\n            " +
+                    "}\r\n        \r\n            var itemRows = document.querySelectorAll(\"#item-locatio" +
+                    "ns tr[data-newlocationid=\'\" + locations[i] + \"\']\");\r\n            for (const item" +
+                    "Row of itemRows) {\r\n                var itemNames = itemRow.querySelectorAll(\".n" +
+                    "ewlocation\");\r\n                var checkbox = itemRow.querySelector(\"input\");\r\n " +
+                    "               var item = logic[itemRow.dataset.id];\r\n                checkbox.c" +
+                    "hecked = item.Acquired;\r\n                for (const itemName of itemNames) {\r\n  " +
+                    "                  if (item.Acquired) {\r\n                        itemName.classLi" +
+                    "st.remove(\"spoiler\");\r\n                    } else {\r\n                        ite" +
+                    "mName.classList.add(\"spoiler\");\r\n                    }\r\n                }\r\n     " +
+                    "       }\r\n        }\r\n        if (itemsToCheck.length > 0) { checkItems(itemsToCh" +
+                    "eck); }\r\n    }\r\n\r\n    var logic = ");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.LogicJson));
             this.Write(";\r\n\r\n    for (var i = 0; i < logic.length; i++) {\r\n        var item = logic[i];\r\n" +
                     "        if (item.Acquired) {\r\n            item.Checked = true;\r\n            var " +
@@ -313,40 +317,56 @@ namespace MMR.Randomizer.Templates
                     "de\') || \'light-mode\'; \r\n\t\tdocument.querySelector(\'#spoilerWebService\').value = l" +
                     "ocalStorage.getItem(\'svcUrl\') || \'");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.WebService));
-            this.Write("\';\r\n\t}\r\n\t\r\n\tvar intervalId;\r\n\tfunction initialSetup() {\r\n\t\tdocument.querySelector" +
-                    "(\'details\').open = false;\r\n\t\tvar input = document.getElementById(\"spoilerWebServ" +
-                    "ice\");\r\n\t\tinput.readOnly = true;\r\n\t\tajax(\'GET\').then((resp) => {\r\n\t\t\tswitch (res" +
-                    "p.StatusCode) {\r\n\t\t\t\tcase 1: \r\n\t\t\t\t\tlocalStorage.setItem(\'svcUrl\', document.getE" +
-                    "lementById(\"spoilerWebService\").value);\r\n\t\t\t\t\tdocument.querySelector(\'#spoilerLo" +
-                    "gState\').value = resp.NewTrackerCode; loadItems();\r\n\t\t\t\t\tintervalId = setInterva" +
-                    "l(periodicCheck, 10000);\r\n\t\t\t\t\tbreak;\r\n\t\t\t\tcase 11: \r\n\t\t\t\t\tlocalStorage.setItem(" +
-                    "\'svcUrl\', document.getElementById(\"spoilerWebService\").value);\r\n\t\t\t\t\tajax(\'POST\'" +
-                    ", {trackercode: \'\', newtrackercode: document.querySelector(\'#spoilerLogState\').v" +
-                    "alue}).then((resp) => {\r\n\t\t\t\t\t\tif (resp.StatusCode != 1) { setupFailure(resp.Sta" +
-                    "tusMessage); }\r\n\t\t\t\t\t}).catch(setupFailure);\r\n\t\t\t\t\tintervalId = setInterval(peri" +
-                    "odicCheck, 10000);\r\n\t\t\t\t\tbreak;\r\n\t\t\t\tdefault:\r\n\t\t\t\t\tsetupFailure(resp.StatusMess" +
-                    "age);\r\n\t\t\t\t\tbreak;\r\n\t\t\t}\r\n\t\t}).catch(setupFailure);\r\n\t}\r\n\tfunction periodicCheck" +
-                    "() {\r\n\t\tajax(\'GET\').then((resp) => {\r\n\t\t\tdocument.querySelector(\'#spoilerLogStat" +
-                    "e\').value = resp.NewTrackerCode; loadItems();\r\n\t\t}).catch(setupFailure);\r\n\t}\r\n\tf" +
-                    "unction setupFailure(errMsg) {\r\n\t\tif (!!errMsg || typeof errMsg !== \'string\') { " +
-                    "errMsg = \'\'; }\r\n\t\tclearInterval(intervalId);\r\n\t\tvar input = document.getElementB" +
-                    "yId(\"spoilerWebService\");\r\n\t\tdocument.querySelector(\'details\').open = true;\r\n\t\tw" +
-                    "indow.scrollTo(0, 0);\r\n\t\tinput.readOnly = false; input.focus();\r\n\t\talert(\'The Sp" +
-                    "oiler Web Service did not respond. \' + errMsg + \' Please specify the correct URL" +
-                    " to use.\');\r\n\t}\r\n\tdocument.querySelector(\'#spoilerWebService\').addEventListener(" +
-                    "\"keypress\", function(event) { if (!document.getElementById(\"spoilerWebService\")." +
-                    "readOnly && event.keyCode === 13) { initialSetup(); } });\r\n\tdocument.querySelect" +
-                    "or(\'#spoilerLogState\').value = getItemList();\r\n\tinitialSetup();\r\n\t\r\n\tfunction aj" +
-                    "ax(method, data) {\r\n\t\treturn fetch(getEndpoint(), {\r\n\t\t\tmethod: method,\r\n\t\t\thead" +
-                    "ers: {\r\n\t\t\t\t\'Accept\': \'application/json\',\r\n\t\t\t\t\'ngrok-skip-browser-warning\': \'1\'" +
-                    "\r\n\t\t\t},\r\n            body: JSON.stringify(data)\r\n\t\t}).then((resp) => resp.json()" +
-                    ");\r\n\t}\r\n\tfunction getEndpoint() { return document.getElementById(\"spoilerWebServ" +
-                    "ice\").value + \'?auth=");
+            this.Write("\';\r\n\t}\r\n\r\n\tvar intervalId;\r\n\tfunction initialSetup() {\r\n\t\tdocument.querySelector(" +
+                    "\'details\').open = false;\r\n\t\tvar input = document.getElementById(\"spoilerWebServi" +
+                    "ce\");\r\n\t\tinput.readOnly = true;\r\n\t\tajax(\'GET\').then((resp) => {\r\n\t\t\tswitch (resp" +
+                    ".StatusCode) {\r\n\t\t\t\tcase 1: \r\n\t\t\t\t\tlocalStorage.setItem(\'svcUrl\', document.getEl" +
+                    "ementById(\"spoilerWebService\").value);\r\n\t\t\t\t\tdocument.querySelector(\'#spoilerLog" +
+                    "State\').value = resp.NewTrackerCode; loadItems();\r\n\t\t\t\t\tintervalId = setInterval" +
+                    "(periodicCheck, 10000);\r\n\t\t\t\t\tbreak;\r\n\t\t\t\tcase 11: \r\n\t\t\t\t\tlocalStorage.setItem(\'" +
+                    "svcUrl\', document.getElementById(\"spoilerWebService\").value);\r\n\t\t\t\t\tajax(\'POST\'," +
+                    " {trackercode: \'\', newtrackercode: document.querySelector(\'#spoilerLogState\').va" +
+                    "lue}).then((resp) => {\r\n\t\t\t\t\t\tif (resp.StatusCode != 1) { setupFailure(resp.Stat" +
+                    "usMessage); }\r\n\t\t\t\t\t}).catch(setupFailure);\r\n\t\t\t\t\tintervalId = setInterval(perio" +
+                    "dicCheck, 10000);\r\n\t\t\t\t\tbreak;\r\n\t\t\t\tdefault:\r\n\t\t\t\t\tsetupFailure(resp.StatusMessa" +
+                    "ge);\r\n\t\t\t\t\tbreak;\r\n\t\t\t}\r\n\t\t}).catch(setupFailure);\r\n\t}\r\n\tfunction periodicCheck(" +
+                    ") {\r\n\t\tajax(\'GET\').then((resp) => {\r\n\t\t\tdocument.querySelector(\'#spoilerLogState" +
+                    "\').value = resp.NewTrackerCode; loadItems();\r\n\t\t}).catch(setupFailure);\r\n\t}\r\n\tfu" +
+                    "nction setupFailure(errMsg) {\r\n\t\tif (!!errMsg || typeof errMsg !== \'string\') { e" +
+                    "rrMsg = \'\'; }\r\n\t\tclearInterval(intervalId);\r\n\t\tvar input = document.getElementBy" +
+                    "Id(\"spoilerWebService\");\r\n\t\tdocument.querySelector(\'details\').open = true;\r\n\t\twi" +
+                    "ndow.scrollTo(0, 0);\r\n\t\tinput.readOnly = false; input.focus();\r\n\t\talert(\'The Spo" +
+                    "iler Web Service did not respond. \' + errMsg + \' Please specify the correct URL " +
+                    "to use.\');\r\n\t}\r\n\t\r\n\tfunction ajax(method, data) {\r\n\t\treturn fetch(getEndpoint()," +
+                    " {\r\n\t\t\tmethod: method,\r\n\t\t\theaders: {\r\n\t\t\t\t\'Accept\': \'application/json\',\r\n\t\t\t\t\'n" +
+                    "grok-skip-browser-warning\': \'1\'\r\n\t\t\t},\r\n            body: JSON.stringify(data)\r\n" +
+                    "\t\t}).then((resp) => resp.json());\r\n\t}\r\n\tfunction getEndpoint() { return document" +
+                    ".getElementById(\"spoilerWebService\").value + \'?auth=");
             this.Write(this.ToStringHelper.ToStringWithCulture(spoiler.WebAuthKey));
-            this.Write("&editor=***EDITORID***\'; }\r\n\tfunction qs(data) { \r\n\t\tif (!data) return \'\';\r\n\t\tvar" +
-                    " returnVal = \'\';\r\n\t\tfor (let key in data) { returnVal += \'&\' + key + \'=\' + encod" +
-                    "eURIComponent(data[key]); }\r\n\t\treturn returnVal; \r\n\t}\r\n</script>\r\n</body>\r\n</htm" +
-                    "l>\r\n");
+            this.Write(@"&editor=***EDITORID***'; }
+	function qs(data) { 
+		if (!data) return '';
+		var returnVal = '';
+		for (let key in data) { returnVal += '&' + key + '=' + encodeURIComponent(data[key]); }
+		return returnVal; 
+	}
+    function isRemote() { return window.location.protocol != 'file:'; }
+    if (isRemote()) {
+	    document.querySelector('#spoilerWebService').addEventListener(""keypress"", function(event) { if (!document.getElementById(""spoilerWebService"").readOnly && event.keyCode === 13) { initialSetup(); } });
+	    document.querySelector('#spoilerLogState').value = getItemList();
+	    initialSetup();
+    } else {
+        document.querySelector('#spoilerWebService').parentElement.setAttribute('hidden', '');
+        document.querySelector('#spoilerLogState').addEventListener(""keypress"", function(event) {
+            if (event.keyCode === 13) {
+                loadItems();
+            }
+        });
+    }
+</script>
+</body>
+</html>
+");
             return this.GenerationEnvironment.ToString();
         }
     }

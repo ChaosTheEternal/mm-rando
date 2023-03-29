@@ -8,6 +8,9 @@
 <html>
 <head>
 <style>
+    * { box-sizing: border-box; }
+    [hidden] { display: none; }
+	
     body.dark-mode {
       background-color: #111;
       color: #ccc;
@@ -47,7 +50,6 @@
     .light-mode .unavailable .newlocation { background-color: #FF9999; }
     .light-mode .acquired .newlocation { background-color: #99FF99; }
     .light-mode .available .newlocation { background-color: #9999FF; }
-
 
     #spoilerWebService, #spoilerLogState { display: block; width: 100%; }
 </style>
@@ -209,7 +211,11 @@
         var saveInput = document.querySelector("#spoilerLogState");
         var oldValue = saveInput.value;
 		saveInput.value = getItemList();
-		return ajax('POST', {trackercode: oldValue, newtrackercode: saveInput.value});
+		if (isRemote()) {
+            return ajax('POST', {trackercode: oldValue, newtrackercode: saveInput.value});
+        } else {
+            return new Promise((rs, rj) => { rs({ StatusCode: 1, NewTrackerCode: saveInput.value }); });
+        }
     }
 
     function loadItems() {
@@ -407,7 +413,7 @@
 		document.querySelector('body').className = localStorage.getItem('mode') || 'light-mode'; 
 		document.querySelector('#spoilerWebService').value = localStorage.getItem('svcUrl') || '<#= spoiler.WebService #>';
 	}
-	
+
 	var intervalId;
 	function initialSetup() {
 		document.querySelector('details').open = false;
@@ -447,9 +453,6 @@
 		input.readOnly = false; input.focus();
 		alert('The Spoiler Web Service did not respond. ' + errMsg + ' Please specify the correct URL to use.');
 	}
-	document.querySelector('#spoilerWebService').addEventListener("keypress", function(event) { if (!document.getElementById("spoilerWebService").readOnly && event.keyCode === 13) { initialSetup(); } });
-	document.querySelector('#spoilerLogState').value = getItemList();
-	initialSetup();
 	
 	function ajax(method, data) {
 		return fetch(getEndpoint(), {
@@ -468,6 +471,19 @@
 		for (let key in data) { returnVal += '&' + key + '=' + encodeURIComponent(data[key]); }
 		return returnVal; 
 	}
+    function isRemote() { return window.location.protocol != 'file:'; }
+    if (isRemote()) {
+	    document.querySelector('#spoilerWebService').addEventListener("keypress", function(event) { if (!document.getElementById("spoilerWebService").readOnly && event.keyCode === 13) { initialSetup(); } });
+	    document.querySelector('#spoilerLogState').value = getItemList();
+	    initialSetup();
+    } else {
+        document.querySelector('#spoilerWebService').parentElement.setAttribute('hidden', '');
+        document.querySelector('#spoilerLogState').addEventListener("keypress", function(event) {
+            if (event.keyCode === 13) {
+                loadItems();
+            }
+        });
+    }
 </script>
 </body>
 </html>
