@@ -1,3 +1,7 @@
+This is a customized build of the Majora's Mask Randomizer that specifically modifies the tracker HTML file to sync state with a personal web server to assist with multiplayer randomizer runs.
+
+---
+
 Majora's Mask Randomizer is a Windows application that randomizes item locations, music, and more for Majora's Mask, presenting millions of combinations and new ways to replay the game.
 
 A video tutorial of setting up MMR is found here: https://www.youtube.com/watch?v=4woEtyg7GyM
