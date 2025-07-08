@@ -79,6 +79,8 @@ namespace MMR.Randomizer.Utils
                 DungeonEntrances = dungeonEntrances,
                 ItemList = itemList.ToList(),
                 Logic = randomized.Logic,
+                WebService = !String.IsNullOrWhiteSpace(outputSettings.WebServiceDN) ? $"{outputSettings.WebServiceDN.TrimEnd('/')}/UpdateEditor.php" : "",
+                WebAuthKey = !String.IsNullOrWhiteSpace(outputSettings.WebAuthKey) ? outputSettings.WebAuthKey : "",
                 BlitzExtraItems = randomized.BlitzExtraItems.AsReadOnly(),
                 Spheres = randomized.Spheres,
                 GossipHints = randomized.GossipQuotes?.ToDictionary(me => (GossipQuote) me.Id, (me) =>

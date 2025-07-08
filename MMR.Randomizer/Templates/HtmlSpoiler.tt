@@ -8,6 +8,9 @@
 <html>
 <head>
 <style>
+    * { box-sizing: border-box; }
+    [hidden] { display: none; }
+	
     body.dark-mode {
       background-color: #111;
       color: #ccc;
@@ -38,29 +41,32 @@
 
     .dark-mode .spoiler{ background-color:#ccc }
     .dark-mode .spoiler:active { background-color: #111;  }
-    .dark-mode .show-highlight .unavailable .newlocation { background-color: #500705; }
-    .dark-mode .show-highlight .acquired .newlocation { background-color: #69591f; }
-    .dark-mode .show-highlight .available .newlocation { background-color: #313776; }
+    .dark-mode .unavailable .newlocation { background-color: #500705; }
+    .dark-mode .acquired .newlocation { background-color: #69591f; }
+    .dark-mode .available .newlocation { background-color: #313776; }
 
     .light-mode .spoiler{ background-color:#111 }
     .light-mode .spoiler:active { background-color: #ccc;  }
-    .light-mode .show-highlight .unavailable .newlocation { background-color: #FF9999; }
-    .light-mode .show-highlight .acquired .newlocation { background-color: #99FF99; }
-    .light-mode .show-highlight .available .newlocation { background-color: #9999FF; }
+    .light-mode .unavailable .newlocation { background-color: #FF9999; }
+    .light-mode .acquired .newlocation { background-color: #99FF99; }
+    .light-mode .available .newlocation { background-color: #9999FF; }
 
-
-    #spoilerLogState { width: 560px; }
+    
+    #spoilerWebService, #spoilerLogState { display: block; width: 100%; }
 </style>
+<title>Majora's Mask Randomizer Tracker - Seed <#= spoiler.Seed #></title>
 </head>
 <body class="light-mode">
-<label><b>Version: </b></label><span><#= spoiler.Version #></span><br/>
-<label><b>Settings: </b></label><code style="word-break: break-all;"><#= spoiler.SettingsString #></code><br/>
-<label><b>Seed: </b></label><span><#= spoiler.Seed #></span><br/>
+<details><summary>Randomizer Information</summary>
+<p><label><b>Version: </b></label><span><#= spoiler.Version #></span></p>
+<p><label><b>Settings: </b></label><code style="word-break: break-all;"><#= spoiler.SettingsString #></code></p>
+<p><label><b>Seed: </b></label><span><#= spoiler.Seed #></span></p>
+<p><label for="spoilerWebService"><b>Spoiler Web Service: </b></label><input id="spoilerWebService" type="text" readonly /></p>
+<p><label for="spoilerLogState"><b>Spoiler Log State: </b></label><input id="spoilerLogState" type="text" /></p>
+</details>
 <br/>
 <button type="button" onclick="toggleDarkLight()" title="Toggle dark/light mode">Toggle Dark Theme</button>
 <br/>
-<br/>
-<label><b>Spoiler Log State: </b></label><input id="spoilerLogState" type="text"/><br/>
 <# if (spoiler.BlitzExtraItems.Any()) { 
 #>
 <h2>Blitz Starting Items</h2>
@@ -90,7 +96,6 @@
 </table>
 <# } #>
 <h2>Item Replacements</h2>
-<input type="checkbox" id="highlight-checks"/> Highlight available checks
 <table border="1" class="item-replacements">
  <tr>
      <th>Location</th>
@@ -202,20 +207,24 @@
     }
     
     var segmentSize = 16;
-    function saveItems() {
+    function getItemList() {
         var segments = [];
         for (var i = 0; i < logic.length; i++) {
             var segmentIndex = parseInt(i / segmentSize);
             segments[segmentIndex] = segments[segmentIndex] || 0;
-            if (logic[i].Checked) {
-                segments[parseInt(i / segmentSize)] += (1 << (i%segmentSize));
-            }
+            if (logic[i].Checked) { segments[parseInt(i / segmentSize)] += (1 << (i%segmentSize)); }
         }
-        var saveString = segments.map(function(s) {
-            return s.toString(16);
-        }).join("-");
+        return segments.map(function(s) { return s.toString(16); }).join("-");
+	}
+    function saveItems() {
         var saveInput = document.querySelector("#spoilerLogState");
-        saveInput.value = saveString;
+        var oldValue = saveInput.value;
+		saveInput.value = getItemList();
+        if (isRemote()) {
+            return ajax('POST', {trackercode: oldValue, newtrackercode: saveInput.value});
+        } else {
+            return new Promise((rs, rj) => { rs({ StatusCode: 1, NewTrackerCode: saveInput.value }); });
+        }
     }
 
     function loadItems() {
@@ -224,10 +233,8 @@
         if (Math.ceil(logic.length / segmentSize) !== segments.length) {
             alert("Invalid Spoiler Log state");
             return;
-        }
-        segments = segments.map(function(segment) {
-            return parseInt(segment, 16);
-        });
+        }        
+        segments = segments.map(function(segment) { return parseInt(segment, 16); });
         var locationsToCheck = [];
         for (var i = 0; i < segments.length; i++) {
             var segment = segments[i];
@@ -242,20 +249,12 @@
                     } else {
                         logic[itemIndex].Acquired = mark;
                     }
-                    if (!includes(locationsToCheck, itemIndex)) {
-                        locationsToCheck.push(itemIndex);
-                    }
+                    if (!includes(locationsToCheck, itemIndex)) { locationsToCheck.push(itemIndex); }
                 }
             }
         }
         checkLocations(locationsToCheck);
     }
-
-    document.querySelector("#spoilerLogState").addEventListener("keypress", function(event) {
-        if (event.keyCode === 13) {
-            loadItems();
-        }
-    });
 
     function checkLocations(locations) {
         var itemsToCheck = [];
@@ -308,11 +307,7 @@
                 }
             }
         }
-        if (itemsToCheck.length > 0) {
-            checkItems(itemsToCheck);
-        } else {
-            saveItems();
-        }
+        if (itemsToCheck.length > 0) { checkItems(itemsToCheck); }
     }
 
     var logic = <#= spoiler.LogicJson #>;
@@ -406,25 +401,104 @@
                 logic[rowId].Acquired = e.target.checked;
                 checkLocations([newLocationId]);
                 checkItems([rowId]);
+				saveItems().then((resp) => {
+					switch (resp.StatusCode) {
+						case 1: break;
+						case 2: 
+							var newState = e.target.checked;
+							document.querySelector('#spoilerLogState').value = resp.NewTrackerCode; loadItems();
+							e.target.checked = newState;
+							e.target.dispatchEvent(new Event('click'));
+							break;
+						default:
+							setupFailure(resp.StatusMessage);
+							break;
+					}
+				}).catch(setupFailure);
             });
         }
     }
 
-    document.querySelector("#highlight-checks").addEventListener("click", function(e) {
-        var tables = document.querySelectorAll("table.item-replacements");
-        for (var i = 0; i < tables.length; i++) {
-            if (e.target.checked) {
-                tables[i].classList.add("show-highlight");
-            } else {
-                tables[i].classList.remove("show-highlight");
-            }
-        }
-    });
-
     function toggleDarkLight() {
-        var body = document.getElementsByTagName('body')[0];
+        var body = document.querySelector('body');
         var currentClassBody = body.className;
         body.className = currentClassBody === "dark-mode" ? "light-mode" : "dark-mode";
+		if (!!localStorage) { localStorage.setItem('mode', body.className); }
+    }
+	if (!!localStorage) { 
+		document.querySelector('body').className = localStorage.getItem('mode') || 'light-mode'; 
+		document.querySelector('#spoilerWebService').value = localStorage.getItem('svcUrl') || '<#= spoiler.WebService #>';
+	}
+	
+	var intervalId;
+	function initialSetup() {
+		document.querySelector('details').open = false;
+		var input = document.getElementById("spoilerWebService");
+		input.readOnly = true;
+		ajax('GET').then((resp) => {
+			switch (resp.StatusCode) {
+				case 1: 
+					localStorage.setItem('svcUrl', document.getElementById("spoilerWebService").value);
+					document.querySelector('#spoilerLogState').value = resp.NewTrackerCode; loadItems();
+					intervalId = setInterval(periodicCheck, 10000);
+					break;
+				case 11: 
+					localStorage.setItem('svcUrl', document.getElementById("spoilerWebService").value);
+					ajax('POST', {trackercode: '', newtrackercode: document.querySelector('#spoilerLogState').value}).then((resp) => {
+						if (resp.StatusCode != 1) { setupFailure(resp.StatusMessage); }
+					}).catch(setupFailure);
+					intervalId = setInterval(periodicCheck, 10000);
+					break;
+				default:
+					setupFailure(resp.StatusMessage);
+					break;
+			}
+		}).catch(setupFailure);
+	}
+	function periodicCheck() {
+		ajax('GET').then((resp) => {
+			document.querySelector('#spoilerLogState').value = resp.NewTrackerCode; loadItems();
+		}).catch(setupFailure);
+	}
+	function setupFailure(errMsg) {
+		if (!!errMsg || typeof errMsg !== 'string') { errMsg = ''; }
+		clearInterval(intervalId);
+		var input = document.getElementById("spoilerWebService");
+		document.querySelector('details').open = true;
+		window.scrollTo(0, 0);
+		input.readOnly = false; input.focus();
+		alert('The Spoiler Web Service did not respond. ' + errMsg + ' Please specify the correct URL to use.');
+	}
+	
+	function ajax(method, data) {
+		return fetch(getEndpoint(), {
+			method: method,
+			headers: {
+				'Accept': 'application/json',
+				'ngrok-skip-browser-warning': '1'
+			},
+            body: JSON.stringify(data)
+		}).then((resp) => resp.json());
+	}
+	function getEndpoint() { return document.getElementById("spoilerWebService").value + '?auth=<#= spoiler.WebAuthKey #>&editor=***EDITORID***'; }
+	function qs(data) { 
+		if (!data) return '';
+		var returnVal = '';
+		for (let key in data) { returnVal += '&' + key + '=' + encodeURIComponent(data[key]); }
+		return returnVal; 
+	}
+    function isRemote() { return window.location.protocol != 'file:'; }
+    if (isRemote()) {
+	    document.querySelector('#spoilerWebService').addEventListener("keypress", function(event) { if (!document.getElementById("spoilerWebService").readOnly && event.keyCode === 13) { initialSetup(); } });
+	    document.querySelector('#spoilerLogState').value = getItemList();
+	    initialSetup();
+    } else {
+        document.querySelector('#spoilerWebService').parentElement.setAttribute('hidden', '');
+        document.querySelector('#spoilerLogState').addEventListener("keypress", function(event) {
+            if (event.keyCode === 13) {
+                loadItems();
+            }
+        });
     }
 </script>
 </body>

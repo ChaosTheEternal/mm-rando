@@ -24,6 +24,11 @@ using System.Threading;
 using MMR.UI.Controls;
 using System.Linq.Expressions;
 using MMR.Randomizer.Attributes.Setting;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MMR.UI.Forms
 {
@@ -1077,11 +1082,59 @@ namespace MMR.UI.Forms
 
         private void bgWorker_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (!String.IsNullOrWhiteSpace(_configuration.OutputSettings.WebServiceDN)
+                && !String.IsNullOrWhiteSpace(_configuration.OutputSettings.WebAuthKey)
+                && MessageBox.Show("Do you want to upload the tracker to the tracking server?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                var trackerPath = Path.Combine(Path.GetDirectoryName(_configuration.OutputSettings.OutputROMFilename), Path.GetFileNameWithoutExtension(_configuration.OutputSettings.OutputROMFilename) + "_Tracker.html");
+                var client = new HttpClient();
+                var data = new System.Net.Http.StringContent(Convert.ToBase64String(System.IO.File.ReadAllBytes(trackerPath)));
+                var resp = client.PostAsync($"{_configuration.OutputSettings.WebServiceDN.TrimEnd('/')}/ManageEditor.php?seed={Convert.ToInt32(tSeed.Text)}&auth={_configuration.OutputSettings.WebAuthKey}&p={GetMD5(_configuration.OutputSettings.WebPassword)}", data);
+                resp.ContinueWith(UploadComplete, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
+            }
             pProgress.Value = 0;
             lStatus.Text = "Ready...";
             EnableAllControls(true);
             ToggleCheckBoxes();
             TogglePatchSettings(ttOutput.SelectedTab.TabIndex == 0);
+        }
+
+        private void UploadComplete(Task<HttpResponseMessage> arg1, object arg2)
+        {
+            var resp = arg1.Result;
+            if (resp.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var result = JsonSerializer.Deserialize<UploadResult>(resp.Content.ReadAsStringAsync().Result);
+                    if (result.StatusCode == 1)
+                    {
+                        var finalUrl = $"{_configuration.OutputSettings.WebServiceDN.TrimEnd('/')}/{result.PathToEditor}";
+                        Clipboard.SetText(finalUrl);
+                        //TODO: Would be nicer to make the link clickable, but that means a custom dialog just for this
+                        // Otherwise, if you want to be lazy, could use the "help file" button and make that the link
+                        MessageBox.Show($"Tracker file uploaded successfully and can be viewed at:\r\n\r\n{finalUrl}\r\n\r\nTracker URL has been copied to your clipboard.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Tracker failed to upload: [{resp.StatusCode}] {resp.RequestMessage}", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Tracker failed to upload: unreadable response, {e.Message}", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show($"Tracker failed to upload: received HTTP {resp.StatusCode} response", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private class UploadResult
+        {
+            public int StatusCode { get; set; }
+            public string PathToEditor { get; set; }
+            public string StatusMessage { get; set; }
         }
 
         private void bgWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -1226,7 +1279,7 @@ namespace MMR.UI.Forms
             else
             {
                 validationResult = _configuration.GameplaySettings.Validate() ?? _configuration.OutputSettings.Validate();
-                var defaultOutputROMFilename = FileUtils.MakeFilenameValid($"MMR-{typeof(Randomizer).Assembly.GetName().Version}-{DateTime.UtcNow:o}");
+                var defaultOutputROMFilename = FileUtils.MakeFilenameValid($"MMR-{typeof(Randomizer).Assembly.GetName().Version}-{tSeed.Text.Trim()}-{DateTime.UtcNow:yyyyMMddHHmmss}");
                 saveROM.FileName = defaultOutputROMFilename;
             }
 
@@ -1290,6 +1343,9 @@ namespace MMR.UI.Forms
             cN64.Checked = _configuration.OutputSettings.GenerateROM;
             cVC.Checked = _configuration.OutputSettings.OutputVC;
             cPatch.Checked = _configuration.OutputSettings.GeneratePatch;
+            tService.Text = _configuration.OutputSettings.WebServiceDN;
+            tAuthKey.Text = _configuration.OutputSettings.WebAuthKey;
+            tPassword.Text = _configuration.OutputSettings.WebPassword;
 
             cItemPlacement.SelectedIndex = (int)_configuration.GameplaySettings.ItemPlacement;
             cMixSongs.Checked = _configuration.GameplaySettings.AddSongs;
@@ -1533,6 +1589,21 @@ namespace MMR.UI.Forms
                 cDummy.Select();
             }
         }
+        private void tService_TextChanged(object sender, EventArgs e)
+        {
+            if (tService.Text.Trim().Contains(".php")) { tService.Text = tService.Text.Substring(0, tService.Text.LastIndexOf('/') + 1); } //we only want the domain and path
+            UpdateSingleSetting(() => _configuration.OutputSettings.WebServiceDN = tService.Text.Trim());
+        }
+
+        private void tAuthKey_TextChanged(object sender, EventArgs e)
+        {
+            UpdateSingleSetting(() => _configuration.OutputSettings.WebAuthKey = tAuthKey.Text.Trim());
+        }
+
+        private void tPassword_TextChanged(object sender, EventArgs e)
+        {
+            UpdateSingleSetting(() => _configuration.OutputSettings.WebPassword = tPassword.Text.Trim());
+        }
 
         private bool _drawHashChecked;
         private void cPatch_CheckedChanged(object sender, EventArgs e)
@@ -1694,19 +1765,13 @@ namespace MMR.UI.Forms
 
         private void mExit_Click(object sender, EventArgs e)
         {
-            SaveAndClose();
+            Application.Exit();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            SaveAndClose();
-        }
-
-        private void SaveAndClose()
-        {
             SaveSettings();
-            Application.Exit();
         }
 
         private void mAbout_Click(object sender, EventArgs e)
@@ -2013,6 +2078,9 @@ namespace MMR.UI.Forms
 
             bRandomise.Enabled = v;
             tSeed.Enabled = v;
+            tService.Enabled = v;
+            tAuthKey.Enabled = v;
+            tPassword.Enabled = v;
             tSettings.Enabled = v;
             bLoadPatch.Enabled = v;
             bApplyPatch.Enabled = v;
@@ -2050,6 +2118,9 @@ namespace MMR.UI.Forms
             };
 
             tSeed.Text = Math.Abs(Environment.TickCount).ToString();
+            tService.Text = ""; //Where can I save/load this from?
+            tAuthKey.Text = "";
+            tPassword.Text = "";
 
             tbUserLogic.Enabled = false;
             bLoadLogic.Enabled = false;
@@ -2168,7 +2239,8 @@ namespace MMR.UI.Forms
                 configurationToSave = new Configuration
                 {
                     GameplaySettings = _configuration.GameplaySettings,
-                };
+                    CosmeticSettings = _configuration.CosmeticSettings
+                }; // I understand not saving output settings, but why not cosmetic settings?
             }
             var fileInfo = new FileInfo(path);
             fileInfo.Directory.Create();
@@ -2442,6 +2514,18 @@ namespace MMR.UI.Forms
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private string GetMD5(string input)
+        {
+            using (MD5 hasher = System.Security.Cryptography.MD5.Create())
+            {
+                var bInput = Encoding.UTF8.GetBytes(input);
+                var bOutput = hasher.ComputeHash(bInput);
+                var sb = new StringBuilder();
+                for (int i = 0; i < bOutput.Length; i++) { sb.Append(bOutput[i].ToString("x2")); }
+                return sb.ToString();
             }
         }
     }

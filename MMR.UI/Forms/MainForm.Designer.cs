@@ -278,6 +278,11 @@ namespace MMR.UI.Forms
             this.ttOutput = new System.Windows.Forms.TabControl();
             this.tpOutputSettings = new System.Windows.Forms.TabPage();
             this.tpPatchSettings = new System.Windows.Forms.TabPage();
+            this.tService = new System.Windows.Forms.TextBox();
+            this.lService = new System.Windows.Forms.Label();
+            this.tPassword = new Controls.CueTextBox();
+            this.tAuthKey = new Controls.CueTextBox();
+            this.lAuthKey = new System.Windows.Forms.Label();
             this.tPatch = new System.Windows.Forms.TextBox();
             this.bLoadPatch = new System.Windows.Forms.Button();
             this.bSkip = new System.Windows.Forms.Button();
@@ -3075,6 +3080,7 @@ namespace MMR.UI.Forms
             // 
             // bRandomise
             // 
+            this.bRandomise.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.bRandomise.Location = new System.Drawing.Point(461, 10);
             this.bRandomise.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.bRandomise.Name = "bRandomise";
@@ -3203,7 +3209,8 @@ namespace MMR.UI.Forms
             // 
             // pProgress
             // 
-            this.pProgress.Location = new System.Drawing.Point(15, 592);
+            this.pProgress.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.pProgress.Location = new System.Drawing.Point(15, 616);
             this.pProgress.Margin = new System.Windows.Forms.Padding(2);
             this.pProgress.Name = "pProgress";
             this.pProgress.Size = new System.Drawing.Size(866, 22);
@@ -3216,9 +3223,10 @@ namespace MMR.UI.Forms
             // 
             // lStatus
             // 
+            this.lStatus.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.lStatus.AutoSize = true;
             this.lStatus.BackColor = System.Drawing.Color.Transparent;
-            this.lStatus.Location = new System.Drawing.Point(13, 573);
+            this.lStatus.Location = new System.Drawing.Point(13, 597);
             this.lStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lStatus.Name = "lStatus";
             this.lStatus.Size = new System.Drawing.Size(48, 15);
@@ -3251,9 +3259,10 @@ namespace MMR.UI.Forms
             // 
             // cDummy
             // 
+            this.cDummy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.cDummy.AutoSize = true;
             this.cDummy.Enabled = false;
-            this.cDummy.Location = new System.Drawing.Point(684, 582);
+            this.cDummy.Location = new System.Drawing.Point(684, 606);
             this.cDummy.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.cDummy.Name = "cDummy";
             this.cDummy.Size = new System.Drawing.Size(83, 19);
@@ -3268,18 +3277,24 @@ namespace MMR.UI.Forms
             // 
             // ttOutput
             // 
+            this.ttOutput.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.ttOutput.Controls.Add(this.tpOutputSettings);
             this.ttOutput.Controls.Add(this.tpPatchSettings);
             this.ttOutput.Location = new System.Drawing.Point(289, 470);
             this.ttOutput.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ttOutput.Name = "ttOutput";
             this.ttOutput.SelectedIndex = 0;
-            this.ttOutput.Size = new System.Drawing.Size(594, 103);
+            this.ttOutput.Size = new System.Drawing.Size(594, 127);
             this.ttOutput.TabIndex = 15;
             this.ttOutput.SelectedIndexChanged += new System.EventHandler(this.ttOutput_Changed);
             // 
             // tpOutputSettings
             // 
+            this.tpOutputSettings.Controls.Add(this.tPassword);
+            this.tpOutputSettings.Controls.Add(this.tAuthKey);
+            this.tpOutputSettings.Controls.Add(this.lAuthKey);
+            this.tpOutputSettings.Controls.Add(this.tService);
+            this.tpOutputSettings.Controls.Add(this.lService);
             this.tpOutputSettings.Controls.Add(this.bRandomise);
             this.tpOutputSettings.Controls.Add(this.tSeed);
             this.tpOutputSettings.Controls.Add(this.lSeed);
@@ -3287,10 +3302,66 @@ namespace MMR.UI.Forms
             this.tpOutputSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tpOutputSettings.Name = "tpOutputSettings";
             this.tpOutputSettings.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tpOutputSettings.Size = new System.Drawing.Size(586, 75);
+            this.tpOutputSettings.Size = new System.Drawing.Size(586, 99);
             this.tpOutputSettings.TabIndex = 0;
             this.tpOutputSettings.Text = "Output settings";
             this.tpOutputSettings.UseVisualStyleBackColor = true;
+            // 
+            // tPassword
+            // 
+            this.tPassword.Cue = "Password";
+            this.tPassword.Location = new Point(357, 70);
+            this.tPassword.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.tPassword.MaxLength = 255;
+            this.tPassword.Name = "tPassword";
+            this.tPassword.Size = new Size(115, 23);
+            this.tPassword.TabIndex = 8;
+            this.tPassword.TextChanged += tPassword_TextChanged;
+            // 
+            // tAuthKey
+            // 
+            this.tAuthKey.Cue = "Auth Key";
+            this.tAuthKey.Location = new Point(90, 70);
+            this.tAuthKey.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.tAuthKey.MaxLength = 255;
+            this.tAuthKey.Name = "tAuthKey";
+            this.tAuthKey.Size = new Size(259, 23);
+            this.tAuthKey.TabIndex = 7;
+            this.tAuthKey.TextChanged += tAuthKey_TextChanged;
+            // 
+            // lAuthKey
+            // 
+            this.lAuthKey.AutoSize = true;
+            this.lAuthKey.BackColor = Color.Transparent;
+            this.lAuthKey.ForeColor = Color.Black;
+            this.lAuthKey.Location = new Point(1, 73);
+            this.lAuthKey.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lAuthKey.Name = "lAuthKey";
+            this.lAuthKey.Size = new Size(89, 15);
+            this.lAuthKey.TabIndex = 9;
+            this.lAuthKey.Text = "Authentication:";
+            // 
+            // tService
+            // 
+            this.tService.Location = new Point(90, 41);
+            this.tService.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.tService.MaxLength = 255;
+            this.tService.Name = "tService";
+            this.tService.Size = new Size(259, 23);
+            this.tService.TabIndex = 6;
+            this.tService.TextChanged += tService_TextChanged;
+            // 
+            // lService
+            // 
+            this.lService.AutoSize = true;
+            this.lService.BackColor = Color.Transparent;
+            this.lService.ForeColor = Color.Black;
+            this.lService.Location = new Point(1, 44);
+            this.lService.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lService.Name = "lService";
+            this.lService.Size = new Size(69, 15);
+            this.lService.TabIndex = 7;
+            this.lService.Text = "Tracker Site:";
             // 
             // tpPatchSettings
             // 
@@ -3301,7 +3372,7 @@ namespace MMR.UI.Forms
             this.tpPatchSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tpPatchSettings.Name = "tpPatchSettings";
             this.tpPatchSettings.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tpPatchSettings.Size = new System.Drawing.Size(586, 75);
+            this.tpPatchSettings.Size = new System.Drawing.Size(586, 114);
             this.tpPatchSettings.TabIndex = 1;
             this.tpPatchSettings.Text = "Patch settings";
             this.tpPatchSettings.UseVisualStyleBackColor = true;
@@ -3328,7 +3399,8 @@ namespace MMR.UI.Forms
             // 
             // bSkip
             // 
-            this.bSkip.Location = new System.Drawing.Point(808, 591);
+            this.bSkip.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.bSkip.Location = new System.Drawing.Point(808, 615);
             this.bSkip.Name = "bSkip";
             this.bSkip.Size = new System.Drawing.Size(75, 23);
             this.bSkip.TabIndex = 17;
@@ -3342,7 +3414,7 @@ namespace MMR.UI.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(896, 627);
+            this.ClientSize = new System.Drawing.Size(896, 651);
             this.Controls.Add(this.bSkip);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.bopen);
@@ -3489,6 +3561,11 @@ namespace MMR.UI.Forms
         private System.Windows.Forms.TabControl ttOutput;
         private System.Windows.Forms.TabPage tpOutputSettings;
         private System.Windows.Forms.TabPage tpPatchSettings;
+        private MMR.UI.Controls.CueTextBox tAuthKey;
+        private System.Windows.Forms.Label lAuthKey;
+        private MMR.UI.Controls.CueTextBox tPassword;
+        private System.Windows.Forms.TextBox tService;
+        private System.Windows.Forms.Label lService;
         private System.Windows.Forms.TextBox tPatch;
         private System.Windows.Forms.Button bLoadPatch;
         private System.Windows.Forms.CheckBox cClearHints;

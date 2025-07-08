@@ -472,7 +472,7 @@ namespace MMR.CLI
             Directory.CreateDirectory(directory);
             if (string.IsNullOrWhiteSpace(filename))
             {
-                filename = FileUtils.MakeFilenameValid($"MMR-{typeof(Randomizer.Randomizer).Assembly.GetName().Version}-{DateTime.UtcNow:o}") + ".z64";
+                filename = FileUtils.MakeFilenameValid($"MMR-{typeof(Randomizer.Randomizer).Assembly.GetName().Version}-{seed}-{DateTime.UtcNow:yyyyMMddHHmmss}") + ".z64";
             }
             else if (Path.GetExtension(filename) != ".z64")
             {

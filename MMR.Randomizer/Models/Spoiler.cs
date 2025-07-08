@@ -15,6 +15,10 @@ namespace MMR.Randomizer.Models
 
         public string SettingsString { get; set; }
 
+        public string WebService { get; set; }
+
+        public string WebAuthKey { get; set; }
+
         public Dictionary<Item, Item> DungeonEntrances { get; set; }
 
         public int Seed { get; set; }

@@ -58,6 +58,23 @@ namespace MMR.Randomizer.Models.Settings
         [Description("Output a patch file that can be applied using the Patch settings tab to reproduce the same ROM.\nPatch file includes all settings except Tunic and Tatl color.")]
         public bool GeneratePatch { get; set; }
 
+        /// <summary>
+        /// Web Service domain for uploading the tracker and where the tracker syncs updates
+        /// </summary>
+
+        [SettingName("MMRO Host Domain Name")]
+        public string WebServiceDN { get; set; }
+
+        /// <summary>
+        /// Web Service Authorization Key to specify who we are and allow uploads
+        /// </summary>
+        public string WebAuthKey { get; set; }
+
+        /// <summary>
+        /// Web Service Password to confirm authorization, this is not used by the generator, but is stored for convenience
+        /// </summary>
+        public string WebPassword { get; set; }
+
         public string Validate()
         {
             if (!GenerateROM && !OutputVC && (InputPatchFilename != null || (!GeneratePatch && !GenerateSpoilerLog && !GenerateHTMLLog)))
